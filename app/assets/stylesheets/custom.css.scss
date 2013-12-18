@@ -1,0 +1,28 @@
+@import url(http://fonts.googleapis.com/css?family=Alegreya+Sans:400,400italic,700,700italic|PT+Mono);
+
+body {
+    margin-top: 60px;
+    font-family: 'Alegreya Sans', sans-serif;
+}
+
+#flash-link {
+    background-color: #ddd;
+    color: #888;
+    padding: 6px;
+    border-radius: 12px;
+}
+
+#flash-link.active {
+    color: #3276b1;
+    background-color: #6DC0FF;
+}
+
+#flash-counter {
+    font-family: "PT Mono", monospace;
+    font-size: 75%;
+    padding: 4px;
+}
+
+li .alert {
+    margin: 8px;
+}

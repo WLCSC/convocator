@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  presenter_id: 1
+  event_id: 1
+  public: false
+
+two:
+  presenter_id: 1
+  event_id: 1
+  public: false

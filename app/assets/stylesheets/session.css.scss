@@ -1,0 +1,30 @@
+// Place all the styles related to the session controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+form.sign-in-form {
+    display: block;
+    width: 30%;
+    margin: auto;
+
+    input {
+        display: block;
+        width: 100%;
+    }
+    input[type="text"], input[type="password"] {
+        margin-bottom: -1px;
+        font-size: 175%;
+    }
+
+    input[type="submit"] {
+        font-size: 150%;
+        margin-top: 7px;
+    }
+}
+
+form {
+    input[type="submit"] {
+        font-size: 150%;
+        margin-bottom: 4px;
+    }
+}

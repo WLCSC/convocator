@@ -1,0 +1,10 @@
+<h1>Organizers</h1>
+
+<% @organizers.each do |p| %>
+    <div class="presenter">
+        <%= image_tag p.photo.url(:medium) %>
+        <h2><%= p.name %></h2>
+        <%= markdown p.description %>
+
+    </div>
+<% end %>

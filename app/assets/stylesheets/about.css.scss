@@ -1,0 +1,18 @@
+// Place all the styles related to the about controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.presenter {
+    padding: 4px;
+    border: thin solid #eee;
+    margin-bottom: 10px;
+    overflow: auto;
+
+    img {
+        border-radius: 6px;
+        width: 200px;
+        margin: 8px;
+        float: left;
+    }
+
+}

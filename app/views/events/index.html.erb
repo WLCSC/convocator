@@ -1,0 +1,7 @@
+<h1>All <%= option('local-events') || 'Events' %></h1>
+
+<% @events.each do |e| %>
+    <div class="event">
+        <h2><%= e.name %></h2>
+    </div>
+<% end %>
