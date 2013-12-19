@@ -1,5 +1,10 @@
 class UsersController < ApplicationController
-    before_action :check_for_user, :only => [:me]
+    before_action :check_for_user, :except => [:new, :create]
+    before_action :check_for_organizer, :only => [:index]
+
+    def index
+      @users = User.all
+    end
 
   # GET /users/new
   def new
@@ -21,7 +26,7 @@ class UsersController < ApplicationController
 
   def update
       @user = current_user
-      if @user.update(params[:user])
+      if @user.update(user_params)
           redirect_to me_path, :notice => 'Updated profile.'
       else
           render :edit

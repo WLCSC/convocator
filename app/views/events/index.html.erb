@@ -1,7 +1,16 @@
 <h1>All <%= option('local-events') || 'Events' %></h1>
 
 <% @events.each do |e| %>
-    <div class="event">
-        <h2><%= e.name %></h2>
+  <div class="event">
+    <% if e.photo.present? %><%= image_tag e.photo.url(:thumb) %><% end %>
+      <h3><% if e.icon %><i class="fa fa-<%= e.icon %>"></i> <% end %><%= link_to e.name, event_path(e) %></h3>
+      <h4>
+        <% if e.end - e.start < 60*60*24 %>
+          <%= e.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= e.end.strftime '%I:%M %P' %>
+        <% else %>
+          <%= e.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= e.end.strftime '%Y-%m-%d %I:%M %P' %>
+        <% end %> (<%= distance_of_time_in_words e.start, e.end %>)
+      </h4>
+      <h5>Presented by <%= e.presenters.map{|p| link_to(p.name, presenter_path(p))}.join(', ').html_safe %></h5>
     </div>
 <% end %>

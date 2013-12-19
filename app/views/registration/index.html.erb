@@ -1,0 +1,26 @@
+<h1><%= option('local-event') || 'Event' %> Registration</h1>
+
+<% if @registrants.count > 0 %>
+  <% @registrants.each do |r| %>
+  <div class="registrant">
+    <h3><%= r.name %></h3>
+    <% if r.events.length > 0 %>
+      <ul class="nav nav-pills">
+        <% r.events.each do |e| %>
+          <li><%= link_to e.name, event_path(e) %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>You aren't registered for any <%= option('local-events') || 'events' %>.  Maybe you should <%= link_to 'sign up for some', events_path %>.</p>  
+    <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <p>You currently don't have any registrants.</p>
+<% end %>
+
+<h2>New Registrant</h2>
+<%= form_tag create_registrant_path do %>
+  <%= text_field_tag :name, nil, :class => 'form-input', :placeholder => 'Name' %>
+  <%= submit_tag "Go", :class => 'btn btn-success' %>
+<% end %>

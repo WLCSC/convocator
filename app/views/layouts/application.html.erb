@@ -47,7 +47,8 @@
                         <% end %>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <% if current_user %>
+                      <% if current_user %>
+                            <li><%= link_to 'Registration', registration_path %></li>
                             <li><%= link_to current_user.email, me_path %></li>
                             <li><%= link_to 'Sign Out', sign_out_path %></li>
                         <% else %>

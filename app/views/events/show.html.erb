@@ -1,2 +1,14 @@
-<h1>Events#show</h1>
-<p>Find me in app/views/events/show.html.erb</p>
+<div class="event">
+  <% if @event.photo.present? %><%= image_tag @event.photo.url(:medium) %><% end %>
+  <h2><% if @event.icon %><i class="fa fa-<%= @event.icon %>"></i> <% end %><%= @event.name %></h2>
+  <h4>
+    <% if @event.end - @event.start < 60*60*24 %>
+      <%= @event.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= @event.end.strftime '%I:%M %P' %>
+    <% else %>
+      <%= @event.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= @event.end.strftime '%Y-%m-%d %I:%M %P' %>
+    <% end %> (<%= distance_of_time_in_words @event.start, @event.end %>)
+  </h4>
+  <h5>Presented by <%= @event.presenters.map{|p| link_to(p.name, presenter_path(p))}.join(', ').html_safe %></h5>
+  <%= markdown @event.description %>
+</div>
+

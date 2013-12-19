@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131218183111) do
+ActiveRecord::Schema.define(version: 20131218230354) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -61,13 +61,17 @@ ActiveRecord::Schema.define(version: 20131218183111) do
     t.datetime "start"
     t.datetime "end"
     t.integer  "limit"
-    t.decimal  "cost",        precision: 6, scale: 2
+    t.decimal  "cost",               precision: 6, scale: 2
     t.boolean  "waitable"
     t.string   "icon"
     t.string   "slug"
     t.text     "meta"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "photo_file_name"
+    t.string   "photo_content_type"
+    t.integer  "photo_file_size"
+    t.datetime "photo_updated_at"
   end
 
   create_table "friendly_id_slugs", force: true do |t|

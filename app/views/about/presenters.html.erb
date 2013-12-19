@@ -3,8 +3,16 @@
 <% @presenters.each do |p| %>
     <div class="presenter">
         <%= image_tag p.photo.url(:medium) %>
-        <h2><%= p.name %></h2>
+        <h2><%= link_to p.name, presenter_path(p) %></h2>
         <%= markdown p.description %>
 
+        <% if p.events.count > 0 %>
+          <%= p.name %> is presenting: 
+          <ul class="nav nav-pills">
+          <% p.events.each do |e| %>
+            <li><%= link_to e.name, event_path(e) %></li>          
+          <% end %>
+          </ul> 
+        <% end %>
     </div>
 <% end %>

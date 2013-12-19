@@ -33,6 +33,62 @@
     </div>
 </div>
 
+<% if current_user == @user || current_organizer %>
+<div class="row">
+  <div class="col-md-6">
+<h3>Registrants</h3>
+<% if @user.registrants.count > 0 %>
+  <% @user.registrants.each do |r| %>
+  <div class="registrant">
+    <h3><%= r.name %></h3>
+    <% if r.events.length > 0 %>
+      <ul class="nav nav-pills">
+        <% r.events.each do |e| %>
+          <li><%= link_to e.name, event_path(e) %></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>You aren't registered for any <%= option('local-events') || 'events' %>.  Maybe you should <%= link_to 'sign up for some', events_path %>.</p>  
+    <% end %>
+    <p>
+    <%= link_to registrant_charges_path(r) do %>
+      Balance: <%= number_to_currency r.balance %>
+    <% end %>
+    </p>
+    </div>
+  <% end %>
+<% else %>
+  <p>You currently don't have any registrants.</p>
+<% end %>
+</div>
+<div class="col-md-6">
+  <h3>Charges</h3>
+  <table class="table">
+  <thead>
+    <tr>
+      <td><i class="fa fa-usd"></i></td>
+      <td>Registrant</td>
+      <td>Comment</td>
+      <td>Amount</td>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @user.charges.last(10).each do |charge| %>
+      <tr>
+        <td><i class="fa fa-<%= charge.icon || 'usd' %>"></i></td>
+        <td><%=  charge.registrant.name  %></td>
+        <td><%= charge.comment %></td>
+        <td><%= number_to_currency charge.amount %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+</div>
+</div>
+<% end %>
+
 
 <% if current_user == @user %>
     <%= link_to 'Change Password', edit_me_path, :class => 'btn btn-primary' %>

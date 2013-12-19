@@ -14,7 +14,15 @@ class AboutController < ApplicationController
       @presenters = Presenter.where(:public => true)
   end
 
+  def presenter
+    @presenter = Presenter.friendly.find(params[:id])
+  end
+
   def organizers
       @organizers = Organizer.where(:public => true)
+  end
+
+  def organizer
+    @organizer = Organizer.friendly.find(params[:id])
   end
 end

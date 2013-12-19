@@ -1,0 +1,42 @@
+<h1>Charges for <%= @registrant.name %> (<%= @registrant.user.email %>)</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <td colspan="2">Balance</td>
+      <td colspan="2"><%= number_to_currency @registrant.balance %></td>
+    </tr>
+
+    <tr>
+      <td><i class="fa fa-usd"></i></td>
+      <td>Charger</td>
+      <td>Comment</td>
+      <td>Description</td>
+      <td>Amount</td>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @charges.each do |charge| %>
+      <tr>
+        <td><i class="fa fa-<%= charge.icon || 'usd' %>"></i></td>
+        <td><%= charge.charger.name %></td>
+        <td><%= charge.comment %></td>
+        <td><%= charge.description %></td>
+        <td><%= number_to_currency charge.amount %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if current_organizer %>
+  <h3>Charge</h3>
+  <%= form_tag registrant_charge_path(@registrant) do %>
+    <%= text_field_tag :amount, nil, :placeholder => 'Amount', :class => 'form-input' %>
+    <%= text_field_tag :comment, nil, :placeholder => 'Comment', :class => 'form-input' %>
+    <%= text_field_tag :icon, nil, :placeholder => 'Icon', :class => 'form-input' %>
+    <%= text_area_tag :description, nil, :placeholder => 'Comment', :class => 'form-input' %>
+
+    <%= submit_tag "Charge", :class => 'btn btn-large btn-success' %>
+  <% end %>
+<% end %>

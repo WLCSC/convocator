@@ -1,4 +1,11 @@
 Convocator::Application.routes.draw do
+  get "registration" => 'registration#index', :as => 'registration' 
+  get "registration/:id" => 'registration#show', :as => 'registrant'
+  get "registration/:id/charges" => 'registration#charges', :as => 'registrant_charges'
+  post "registration/:id/charge" => 'registration#charge', :as => 'registrant_charge'
+  post "registration/create", :as => 'create_registrant'
+  get "registration/:id/destroy" => 'registration#destroy', :as => 'destroy_registrant'
+
   ActiveAdmin.routes(self)
   get "events" => 'events#index', :as => 'events'
   get "events/:id" => 'events#show', :as => 'event'
@@ -6,11 +13,13 @@ Convocator::Application.routes.draw do
 
   get "about" => 'about#index', :as => 'about'
   get "about/presenters", :as => 'presenters'
+  get "about/presenters/:id" => 'about#presenter', :as => 'presenter'
   get "about/organizers", :as => 'organizers'
+  get "about/organizers/:id" => 'about#organizer', :as => 'organizer'
 
-    resources :users
-    get "me" => 'users#me', :as => 'me'
-    get 'me/edit' => 'users#edit', :as => 'edit_me'
+  resources :users
+  get "me" => 'users#me', :as => 'me'
+  get 'me/edit' => 'users#edit', :as => 'edit_me'
 
   get "sign-in" => 'session#new', :as => 'sign_in'
   post "sign-in" => 'session#create', :as => 'session_create'

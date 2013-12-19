@@ -1,0 +1,7 @@
+<h1><%= @presenter.name %></h1>
+
+    <div class="presenter">
+        <%= image_tag @presenter.photo.url(:medium) %>
+        <%= markdown @presenter.description %>
+
+    </div>

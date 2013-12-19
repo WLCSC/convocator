@@ -13,4 +13,6 @@ class Event < ActiveRecord::Base
     has_many :rules, :through => :rulers
 
     friendly_id :name, use: :slugged
+    has_attached_file :photo, :styles => {:medium => "300x300>", :thumb => '100x100>'}
+
 end

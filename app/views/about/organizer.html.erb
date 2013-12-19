@@ -1,0 +1,6 @@
+<h1><%= @organizer.name %></h1>
+
+    <div class="presenter">
+        <%= image_tag @organizer.photo.url(:medium) %>
+        <%= markdown @organizer.description %>
+    </div>
