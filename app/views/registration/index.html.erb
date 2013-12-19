@@ -3,13 +3,26 @@
 <% if @registrants.count > 0 %>
   <% @registrants.each do |r| %>
   <div class="registrant">
-    <h3><%= r.name %></h3>
+      <h3><%= r.name %> (<%= number_to_currency r.balance %>)</h3>
     <% if r.events.length > 0 %>
-      <ul class="nav nav-pills">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><%= option('local-event') || 'Event' %></th>
+                    <th>Cost</th>
+                    <th>Cancel</th>
+                </tr>
+            </thead>
+            <tbody>
         <% r.events.each do |e| %>
-          <li><%= link_to e.name, event_path(e) %></li>
+            <tr>
+                <td><%= link_to e.name, event_path(e) %></td>
+                <td><%= number_to_currency e.cost %></td>
+                <td><%= link_to 'Cancel', unregister_path(e, :registrant_id => r.id, :event_id => e.id), :class => 'btn btn-mini btn-danger' %> 
+            </tr>
         <% end %>
-      </ul>
+        </tbody>
+      </table>
     <% else %>
       <p>You aren't registered for any <%= option('local-events') || 'events' %>.  Maybe you should <%= link_to 'sign up for some', events_path %>.</p>  
     <% end %>
@@ -20,7 +33,18 @@
 <% end %>
 
 <h2>New Registrant</h2>
+<p>If you would like to register more people, you can add someone here:</p>
 <%= form_tag create_registrant_path do %>
   <%= text_field_tag :name, nil, :class => 'form-input', :placeholder => 'Name' %>
   <%= submit_tag "Go", :class => 'btn btn-success' %>
+<% end %>
+
+
+<% if current_user && current_user.registrants.count > 0 %>
+<h2>Condense Charges</h2>
+<p>If you would like to condense all outstanding balances from all your registrants onto one registrant, you can do that here:</p>
+    <%= form_tag condense_user_path(current_user), :style => 'display: inline' do %>
+        <%= select_tag :registrant_id, options_for_select(current_user.registrants.map{|r| [r.name, r.id]}) %>
+        <%= submit_tag "Condense", :class => 'btn btn-mini btn-warning' %>
+    <% end %>
 <% end %>

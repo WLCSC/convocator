@@ -11,6 +11,13 @@
         </div>
     <% end %>
 
+    <% unless current_user %>
+    <div class="form-group">
+        <label>Name</label>
+        <%= f.text_field :name, :class => 'form-control' %>
+    </div>
+    <% end %>
+
     <div class="form-group">
         <label>Email Address</label>
         <% if current_user == @user %>

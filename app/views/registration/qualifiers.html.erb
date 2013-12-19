@@ -1,0 +1,12 @@
+<h1>A few quick questions...</h1>
+
+<%= form_tag qualify_path do %>
+    <% @qualifiers.each do |q| %>
+        <% case q.meta['type'] %>
+        <% when 'check_box' %>
+            <p><%= q.name %> <%= check_box_tag "qu#{q.id}" %></p>
+        <% end %>
+    <% end %>
+
+    <%= submit_tag 'OK', :class => 'btn btn-large btn-primary' %>
+<% end %>

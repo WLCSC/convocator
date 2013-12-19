@@ -16,6 +16,9 @@ class AboutController < ApplicationController
 
   def presenter
     @presenter = Presenter.friendly.find(params[:id])
+    if !(current_presenter || current_organizer) && !@presenter.public
+        redirect_to presenters_path, :alert => 'That presenter is not publicly available.'
+    end
   end
 
   def organizers

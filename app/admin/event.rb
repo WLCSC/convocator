@@ -11,11 +11,13 @@ ActiveAdmin.register Event do
         f.input :icon
         f.input :photo
         f.input :waitable
+        f.input :meta_string, :as => :text, :input_html => {:value => event.get_meta_string}
         end
 
         f.inputs "Presenters" do
           f.input :presenters, :as => :check_boxes, :collection => Presenter.all 
         end
+
         f.actions
     end
 
@@ -26,7 +28,7 @@ ActiveAdmin.register Event do
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
-    permit_params :name, :description, :start, :end, :limit, :cost, :waitable, :icon, :photo, :presenter_ids => []
+    permit_params :name, :description, :start, :end, :limit, :cost, :waitable, :icon, :photo, :meta_string, :presenter_ids => []
   #
   # or
   #

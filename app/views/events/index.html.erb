@@ -2,7 +2,7 @@
 
 <% @events.each do |e| %>
   <div class="event">
-    <% if e.photo.present? %><%= image_tag e.photo.url(:thumb) %><% end %>
+    <% if e.photo.present? %><%= image_tag e.photo.url(:medium) %><% end %>
       <h3><% if e.icon %><i class="fa fa-<%= e.icon %>"></i> <% end %><%= link_to e.name, event_path(e) %></h3>
       <h4>
         <% if e.end - e.start < 60*60*24 %>
@@ -10,7 +10,11 @@
         <% else %>
           <%= e.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= e.end.strftime '%Y-%m-%d %I:%M %P' %>
         <% end %> (<%= distance_of_time_in_words e.start, e.end %>)
-      </h4>
-      <h5>Presented by <%= e.presenters.map{|p| link_to(p.name, presenter_path(p))}.join(', ').html_safe %></h5>
+    </h4>
+    <% presenters = current_organizer ? e.presenters : e.presenters.where(:public => true) %>
+    <% if presenters.count > 0 %>
+        <h5>Presented by <%= presenters.map{|p| link_to(p.name, presenter_path(p), :class => (p.public ? '' : 'secret-presenter'))}.join(', ').html_safe %></h5>
+    <% end %>
+      <p><i><%= e.registrants.count %> registered - <%= e.limit - e.registrants.count %> seats left.</i></p>
     </div>
 <% end %>

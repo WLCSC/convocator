@@ -1,28 +1,20 @@
-ActiveAdmin.register Organizer do
+ActiveAdmin.register Qualifier do
 
     form do |f|
         f.inputs do
+            f.input :group_id, :as => :select, :collection => Group.all
             f.input :name
-            f.input :public
             f.input :description
-            f.input :photo, :as => :file
+            f.input :meta_string, :as => :text, :input_html => {:value => qualifier.get_meta_string}
         end
+
         f.actions
     end
-
-    action_item :only => :show do
-        link_to 'User', admin_user_path(organizer.user)
-    end
-
-    before_filter :only => [:show, :edit, :destroy] do
-        @organizer = Organizer.friendly.find(params[:id])
-    end
-
   
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
-  permit_params :name, :description, :public, :photo
+  permit_params :group_id, :name, :description, :meta_string
   #
   # or
   #

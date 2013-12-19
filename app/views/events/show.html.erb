@@ -8,7 +8,60 @@
       <%= @event.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= @event.end.strftime '%Y-%m-%d %I:%M %P' %>
     <% end %> (<%= distance_of_time_in_words @event.start, @event.end %>)
   </h4>
-  <h5>Presented by <%= @event.presenters.map{|p| link_to(p.name, presenter_path(p))}.join(', ').html_safe %></h5>
-  <%= markdown @event.description %>
+    <% presenters = current_organizer ? @event.presenters : @event.presenters.where(:public => true) %>
+    <% if presenters.count > 0 %>
+        <h5>Presented by <%= presenters.map{|p| link_to(p.name, presenter_path(p), :class => (p.public ? '' : 'secret-presenter'))}.join(', ').html_safe %></h5>
+    <% end %>
+  <p>
+    <i><%= @event.registrants.count %> registered - <%= @event.limit - @event.registrants.count %> seats left.</i>
+    <% if current_user && (q = current_user.registrants.to_a.keep_if{|r| @event.registrants.include? r}).count > 0 %>
+        - <%= q.map{|r| r.name}.join(', ') %> <%= q.count == 1 ? 'is' : 'are' %> registered.
+    <% end %>
+  </p>
+  <%= markdown @event.description, @event %>
+
+  <% if option('blurb-event') %>
+    <%= markdown option('blurb-event'), @event %>
+  <% end %>
 </div>
 
+
+<% if (current_presenter && @event.presenters.include?(current_presenter)) || current_organizer %>
+    <h2>Registrations</h2>
+    <table class="table table-striped">
+        <thead>
+            <th>User</th>
+            <th>Registrants</th>
+        </thead>
+        <tbody>
+            <% @users.each do |user| %>
+                <tr>
+                    <td><%= link_to user.email, "mailto:#{user.email}" %></td>
+                    <td>
+                        <%= @event.registrants_for(user).map do |r|
+                            r.waiting_on?(@event) ? link_to(r.name, r.user, :class => 'waitlisted') : link_to(r.name, r.user)
+                         end.join(', ').html_safe %>
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+<% end %>
+
+<% if current_user %>
+    <h2>Register for <%= @event.name %></h2>
+    <% if current_user.registrants.count > 0 %>
+        <% registrants = current_user.registrants.to_a.delete_if{|r| !@event.allows? r}.delete_if{|r| @event.registrants.include? r} %>
+        <% if registrants.count > 0 %>
+            <%= form_tag register_path do %>
+                <%= select_tag :registrant_id, options_for_select(registrants.map{|r| [r.name, r.id]}) %>
+                <%= hidden_field_tag :event_id, @event.id %>
+                <%= submit_tag 'Register!', :class => 'btn btn-primary' %>
+            <% end %>
+        <% else %>
+            <p>None of your registrants are allowed to register for this event.</p>
+        <% end %>
+    <% else %>
+        <p>You don't have any registrants associated with your account.  Please create one <%= link_to 'here', registration_path %></p>
+    <% end %>
+<% end %>

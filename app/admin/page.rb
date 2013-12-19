@@ -4,7 +4,7 @@ ActiveAdmin.register Page do
         link_to page.name, admin_page_path(page)
     end
 
-    before_filter :only => [:show, :edit, :destroy] do
+    before_filter :only => [:show, :edit, :update, :destroy] do
         @page = Page.friendly.find(params[:id])
     end
 
@@ -12,6 +12,7 @@ ActiveAdmin.register Page do
         f.inputs do
             f.input :name
             f.input :body
+            f.input :meta_string, :as => :text, :input_html => {:value => page.get_meta_string}
         end
 
         f.actions
@@ -20,7 +21,7 @@ ActiveAdmin.register Page do
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
-  permit_params :name, :body
+  permit_params :name, :body, :meta_string
   #
   # or
   #

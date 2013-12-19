@@ -1,20 +1,21 @@
-ActiveAdmin.register Registrant do
-
+ActiveAdmin.register Rule do
+ 
     form do |f|
         f.inputs do
-            f.input :user_id, :as => :select, :collection => User.all
-            f.input :name
+            f.input :group
+            f.input :meta_string, :as => :text, :input_html => {:value => rule.get_meta_string}
         end
-        f.inputs 'Groups' do
-            f.input :groups, :as => :check_boxes, :collection => Group.all
+        
+        f.inputs 'Events' do
+            f.input :events, :as => :check_boxes, :collection => Event.all
         end
+
         f.actions
     end
-  
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
-  permit_params :user_id, :name, :group_ids => []
+  permit_params :group_id, :meta_string, :event_ids => []
   #
   # or
   #

@@ -40,17 +40,27 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
+          r = @user.registrants.build
+          r.name = @user.name
+          r.save
           session[:user_id] = @user.id
-        format.html { redirect_to root_path, notice: 'Welcome!' }
+        redirect_to (Qualifier.count > 0 ? qualifiers_path(@user.registrant.first) : @user), :notice => 'Created user.'
       else
         format.html { render action: 'new' }
       end
     end
   end
 
+  def condense
+      @user = User.find(params[:id])
+      @registrant = @user.registrants.find(params[:registrant_id])
+      @user.condense_charges @registrant
+      redirect_to @user, :notice => 'Condensed charges.'
+  end
+
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:email, :password, :password_confirmation)
+      params.require(:user).permit(:email, :password, :password_confirmation, :name)
     end
 end

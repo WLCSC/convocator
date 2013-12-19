@@ -8,7 +8,24 @@ class User < ActiveRecord::Base
     has_secure_password
     validates :email, uniqueness: true
 
+    attr_accessor :name
+
     def charges
       Charge.where(:registrant_id => self.registrant_ids).order('created_at DESC')
+    end
+
+    def balance
+        registrants.inject{|s, r| s + r.balance}
+    end
+
+    def condense_charges target
+        b = BigDecimal.new '0'
+        registrants.each do |r|
+            unless r == target
+                b += r.balance
+                Charge.create(:charger => nil, :amount => -r.balance, :comment => "Condensing Charges on #{target.name}", :description => nil, :icon => 'exchange', :registrant_id => r.id)
+            end
+        end
+        Charge.create(:charger => nil, :amount => b, :comment => 'Condensed Charges', :description => nil, :icon => 'exchange', :registrant_id => target.id)
     end
 end

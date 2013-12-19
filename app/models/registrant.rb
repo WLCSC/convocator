@@ -9,4 +9,8 @@ class Registrant < ActiveRecord::Base
   def balance
     self.charges.count > 0 ? self.charges.map{|c| c.amount}.inject{|s, c| s + c} : 0
   end
+
+  def waiting_on? event
+      registrations.where(:event_id => event.id).first.waiting
+  end
 end

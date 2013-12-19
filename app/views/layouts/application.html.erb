@@ -26,8 +26,8 @@
                             <%= link_to 'Information <b class="caret"></b>'.html_safe, '#', :class => 'dropdown-toggle', :"data-toggle" => 'dropdown' %>
                             <ul class="dropdown-menu">
                                 <li><%= link_to "About Us", about_path %></li>
-                                <li><%= link_to "Organizers", organizers_path %></li>
-                                <li><%= link_to "Presenters", presenters_path %></li>
+                                <% if Organizer.where(:public => true).count > 0 %><li><%= link_to "Organizers", organizers_path %></li><% end %>
+                                <% if Presenter.where(:public => true).count > 0 %><li><%= link_to "Presenters", presenters_path %></li><% end %>
                             </ul>
                         </li>
                         <li><%= link_to (option('local-events') || 'Events'), events_path %></li>
@@ -37,22 +37,34 @@
                                 <%= link_to (n.name + ' <b class="caret"></b>').html_safe, '#', :class => 'dropdown-toggle', :"data-toggle" => 'dropdown' %>
                                 <ul class="dropdown-menu">
                                     <% n.children.each do |m| %>
-                                        <li><%= link_to m.name, page_path(m.page) %></li>
+                                        <li><%= link_to( ((m.page.meta['icon'] ? "<i class='fa fa-#{m.page.meta["icon"]}'></i> " : '') + m.name).html_safe, page_path(m.page)) %></li>
                                     <% end %>
                                 </ul>
                                 </li>
                             <% else %>
-                                <li><%= link_to n.name, page_path(n.page) %></li>
+                                <li><%= link_to(((n.page.meta['icon'] ? "<i class='fa fa-#{n.page.meta["icon"]}'></i> " : '') + n.name).html_safe, page_path(n.page)) %></li>
                             <% end %>
                         <% end %>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                      <% if current_user %>
-                            <li><%= link_to 'Registration', registration_path %></li>
+                        <% if current_user %>
+                            <% if current_organizer || current_presenter %>
+                                <li class="dropdown">
+                            <%= link_to 'Tools <b class="caret"></b>'.html_safe, '#', :class => 'dropdown-toggle', :"data-toggle" => 'dropdown' %>
+                            <ul class="dropdown-menu">
+                                <% if current_organizer %>
+                                    <li><%= link_to "Admin Panel", root_url + 'admin/' %></li>
+                                    <li><%= link_to "Users", users_path %></li>
+                                <% end %>
+                            </ul>
+                                </li>
+                            <% else %>
+                            <% end %>
                             <li><%= link_to current_user.email, me_path %></li>
                             <li><%= link_to 'Sign Out', sign_out_path %></li>
                         <% else %>
                             <li><%= link_to 'Sign In', sign_in_path %></li>
+                            <li><%= link_to 'Sign Up', sign_up_path %></li>
                         <% end %>
                          <li class="dropdown">
                         <%= link_to '#', :class => 'dropdown-toggle', :'data-toggle' => 'dropdown' do %>

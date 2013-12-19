@@ -1,7 +1,35 @@
 <h1><%= @presenter.name %></h1>
 
-    <div class="presenter">
-        <%= image_tag @presenter.photo.url(:medium) %>
-        <%= markdown @presenter.description %>
+<div class="presenter">
+    <%= image_tag @presenter.photo.url(:medium) %>
+    <%= markdown @presenter.description %>
 
-    </div>
+        <% if option('blurb-presenter') %>
+            <%= markdown option('blurb-presenter'), @presenter %>
+        <% end %>
+</div>
+<% if @presenter.events.count > 0 %>
+    <h3><%= @presenter.name %> is presenting: </h3>
+    <% @presenter.events.each do |e| %>
+        <div class="event">
+            <% if e.photo.present? %><%= image_tag e.photo.url(:medium) %><% end %>
+            <h3><% if e.icon %><i class="fa fa-<%= e.icon %>"></i> <% end %><%= link_to e.name, event_path(e) %></h3>
+            <h4>
+                <% if e.end - e.start < 60*60*24 %>
+                    <%= e.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= e.end.strftime '%I:%M %P' %>
+                <% else %>
+                    <%= e.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= e.end.strftime '%Y-%m-%d %I:%M %P' %>
+                <% end %> (<%= distance_of_time_in_words e.start, e.end %>)
+            </h4>
+            <h5>Presented by <%= e.presenters.map{|p| link_to(p.name, presenter_path(p))}.join(', ').html_safe %></h5>
+            <p>
+            <i><%= e.registrants.count %> registered - <%= e.limit - e.registrants.count %> seats left.</i>
+            <% if current_user && (q = current_user.registrants.to_a.keep_if{|r| e.registrants.include? r}).count > 0 %>
+                - <%= q.map{|r| r.name}.join(', ') %> <%= q.count == 1 ? 'is' : 'are' %> registered.
+            <% end %>
+            </p>
+
+        </div>
+    <% end %>
+<% end %>
+

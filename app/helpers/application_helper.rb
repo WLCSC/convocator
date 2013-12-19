@@ -20,7 +20,16 @@ module ApplicationHelper
         flash_messages.join("\n").html_safe
     end
 
-    def markdown(text)
+    def markdown(text, source = nil)
+        if source
+            text.gsub!(/!\(meta:([a-zA-Z-]+)\)/) do |match|
+                source.meta[$1] || "unknown"
+            end
+            text.gsub!(/!\(meta:(\w.+):(.+)\)/) do |match|
+                source.meta[$1] || $2
+            end
+        end
+
         renderer = Redcarpet::Render::HTML.new(hard_wrap: true, filter_html: true)
         options = {
             autolink: true,

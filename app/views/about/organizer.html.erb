@@ -3,4 +3,7 @@
     <div class="presenter">
         <%= image_tag @organizer.photo.url(:medium) %>
         <%= markdown @organizer.description %>
+        <% if option('blurb-organizer') %>
+            <% markdown option('blurb-organizer'), @organizer %>
+        <% end %>
     </div>
