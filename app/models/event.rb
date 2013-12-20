@@ -19,6 +19,13 @@ class Event < ActiveRecord::Base
 
     def allows? registrant 
         go = true
+
+        registrant.events.each do |e|
+          if e.end >= self.start && e.start <= self.end
+            go = false
+          end
+        end
+
         self.rules.where(:group_id => registrant.group_ids << nil).each do |rule|
             rule.meta.each do |k, v|
                 case k

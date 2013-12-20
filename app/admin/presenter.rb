@@ -11,11 +11,13 @@ ActiveAdmin.register Presenter do
         f.actions
     end
   
-    before_filter :only => [:show, :edit, :destroy, :update, :create] do
+    before_filter :only => [:show, :edit, :destroy, :update] do
         @presenter = Presenter.friendly.find(params[:id])
     end
     action_item :only => :show do
+      if presenter.user
         link_to 'User', admin_user_path(presenter.user)
+      end
     end
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters

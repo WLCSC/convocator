@@ -111,7 +111,7 @@ class RegistrationController < ApplicationController
         if @event.registrants.include? @registrant
             r = Registration.where(:event_id => @event.id, :registrant_id => @registrant.id).first
             unless r.waiting
-                if @event.cost != 0
+                if @event.cost != 0 || @event.cost != nil
                     @charge = @registrant.charges.build()
                     @charge.charger = @event
                     @charge.amount = -@event.cost

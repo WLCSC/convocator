@@ -7,7 +7,7 @@ class Registrant < ActiveRecord::Base
   has_many :groups, :through => :memberships
 
   def balance
-    self.charges.count > 0 ? self.charges.map{|c| c.amount}.inject{|s, c| s + c} : 0
+    self.charges.count > 0 ? self.charges.map{|c| c.amount || 0}.inject(0, :+) : 0
   end
 
   def waiting_on? event
