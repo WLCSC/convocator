@@ -14,6 +14,7 @@
 
     img {
         padding: 6px;
+        width: 100px;
     }
 }
 
@@ -38,4 +39,15 @@
 a.waitlisted {
     color: #d44;
     font-weight: bold;
+}
+
+.registrant {
+    border-top: thin solid #444;
+    border-bottom: thin solid #444;
+
+    h3 {
+        margin-top: 2px;
+        margin-bottom: 2px;
+        font-weight: bold;
+    }
 }

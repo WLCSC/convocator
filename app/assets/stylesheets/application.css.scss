@@ -10,6 +10,7 @@
  *
  *= require_self
  *= require welcome
+ *= require icons
  *= require session
  *= require user
  *= require about
@@ -18,4 +19,3 @@
  */
 
 @import "bootstrap";
-@import "font-awesome";

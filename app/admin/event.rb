@@ -1,5 +1,17 @@
 ActiveAdmin.register Event do
 
+    index do
+        column :name do |e|
+            ("<i class=\"fa fa-#{e.icon}\"></i> " +  link_to(e.name, admin_event_path(e))).html_safe
+        end
+        column :cost do |e|
+            number_to_currency e.cost
+        end
+        column :limit
+        column :start
+        column :end
+    end
+
     form do |f|
         f.inputs do
         f.input :name

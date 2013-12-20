@@ -24,6 +24,7 @@ Convocator::Application.routes.draw do
 
   resources :users do
       post 'condense', :on => :member
+      get 'bill', :on => :member
   end
   get "me" => 'users#me', :as => 'me'
   get 'me/edit' => 'users#edit', :as => 'edit_me'

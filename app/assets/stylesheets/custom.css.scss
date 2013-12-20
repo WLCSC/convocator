@@ -26,3 +26,17 @@ body {
 li .alert {
     margin: 8px;
 }
+
+p.question {
+    margin-bottom: 0px;
+}
+
+.question {
+    font-weight: bold;
+}
+
+@media print {
+    body{
+        margin: 0px;
+    }  
+}

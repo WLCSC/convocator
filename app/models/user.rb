@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
     end
 
     def balance
-        registrants.inject{|s, r| s + r.balance}
+        self.registrants.count > 0 ? self.registrants.map{|c| c.balance || 0}.inject(0, :+) : 0
     end
 
     def condense_charges target

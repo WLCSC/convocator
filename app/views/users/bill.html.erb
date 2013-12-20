@@ -1,0 +1,47 @@
+<h1>Charges for <%= @user.registrants.map{|r| r.name}.join(', ') %> (<%= @user.email %>)</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr class="<%= @user.balance == 0 ? "success" : (@user.balance > 0 ? 'danger' : 'active') %>">
+            <td colspan="5">Balance</td>
+            <td colspan="1"><%= number_to_currency @user.balance %></td>
+        </tr>
+
+        <tr>
+            <th>Time</th>
+            <th>Registrant</th>
+            <th>Charger</th>
+            <th><i class="fa fa-usd"></i></th>
+            <th>Comment</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <% @charges.each do |charge| %>
+            <tr>
+                <td><%= charge.created_at.strftime("%Y-%m-%d<br/>%I:%M %P").html_safe %></td>
+                <td><%= charge.registrant.name %></td>
+                <td><%= charge.charger ? ("<i class=\"fa fa-#{charge.charger.icon}\"></i> " + charge.charger.name).html_safe : "<i class=\"fa fa-desktop\"></i> System".html_safe %></td>
+                <td><i class="fa fa-<%= charge.icon || 'usd' %>"></i></td>
+                <td><%= charge.comment %><% if charge.description %><p style="font-style: italic;"><%= charge.description %></p><% end %></td>
+                <td><%= number_to_currency charge.amount %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<% if current_organizer %>
+    <div class="hidden-print">
+    <h3>Charge</h3>
+    <%= form_tag user_charge_path() do %>
+        <%= select_tag :id, options_for_select(@user.registrants.map{|r| [r.name, r.id]}) %>
+        <%= text_field_tag :amount, nil, :placeholder => 'Amount', :class => 'form-input' %>
+        <%= text_field_tag :comment, nil, :placeholder => 'Comment', :class => 'form-input' %>
+        <%= text_field_tag :icon, nil, :placeholder => 'Icon', :class => 'form-input' %>
+        <%= text_area_tag :description, nil, :placeholder => 'Description', :class => 'form-input' %>
+
+        <%= submit_tag "Charge", :class => 'btn btn-large btn-success' %>
+    <% end %>
+</div>
+<% end %>

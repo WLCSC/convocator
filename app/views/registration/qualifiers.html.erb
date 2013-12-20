@@ -2,10 +2,25 @@
 
 <%= form_tag qualify_path do %>
     <% @qualifiers.each do |q| %>
-        <% case q.meta['type'] %>
-        <% when 'check_box' %>
-            <p><%= q.name %> <%= check_box_tag "qu#{q.id}" %></p>
-        <% end %>
+        <div class="form-group">
+            <% case q.meta['type'] %>
+            <% when 'check_box', 'not_check_box', 'switch_box' %>
+                <%= label_tag "qu#{q.id}", q.name %> 
+                <%= check_box_tag "qu#{q.id}" %></p>
+            <% when 'radio_group' %>
+                <%
+                    labels = q.meta['labels'].split '&'
+                %>
+                <p class="question"><%= q.name %></p>
+                <% 1.upto(labels.length) do |i| %>
+                    <div class="radio">
+                        <label>
+                            <%= radio_button_tag "qu#{q.id}", i %> <%= labels[i-1] %>
+                        </label>
+                    </div>
+                <% end %>
+            <% end %>
+        </div>
     <% end %>
 
     <%= submit_tag 'OK', :class => 'btn btn-large btn-primary' %>

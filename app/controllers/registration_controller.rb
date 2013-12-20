@@ -43,7 +43,7 @@ class RegistrationController < ApplicationController
         @qualifiers = Qualifier.all
 
         @qualifiers.each do |q|
-            q.group.registrants << @registrant if q.qualify @registrant, params["qu#{q.id}"]
+            q.qualify @registrant, params["qu#{q.id}"]
         end
         redirect_to @registrant.user
     end
@@ -69,7 +69,7 @@ class RegistrationController < ApplicationController
         @event = Event.find(params[:event_id])
 
         if @event.allows? @registrant
-            if @event.registrants.count < @event.limit || @event.limit == nil || @event.waitable
+            if @event.limit == nil || @event.registrants.count < @event.limit || @event.waitable
                 r = Registration.create(:registrant_id => @registrant.id, :event_id => @event.id)
 
                 if @event.limit != nil && @event.waitable && @event.registrants.count > @event.limit  
@@ -90,9 +90,9 @@ class RegistrationController < ApplicationController
                 @event.register_rules @registrant
 
                 if r.waiting
-                    redirect_to @registrant.user, :notice => "#{@registrant.name} is on the waitlist for #{@event.name}!"
+                    redirect_to events_path, :notice => "#{@registrant.name} is on the waitlist for #{@event.name}!"
                 else
-                    redirect_to @registrant.user, :notice => "Registered #{@registrant.name} for #{@event.name}!"
+                    redirect_to events_path, :notice => "Registered #{@registrant.name} for #{@event.name}!"
                 end
 
             else

@@ -1,4 +1,21 @@
 ActiveAdmin.register Registrant do
+    index do
+        column :name do |r|
+            link_to r.name, admin_registrant_path(r)
+        end
+        column "Registered by" do |r|
+            link_to r.user.email, admin_user_path(r.user)
+        end
+        column :groups do |r|
+            r.groups.map{|e| link_to e.name, admin_group_path(e) }.join(', ').html_safe
+        end
+        column :events do |r|
+            r.events.map{|e| link_to e.name, admin_event_path(e) }.join(', ').html_safe
+        end
+        actions do |r|
+            link_to "Billing", user_path(r.user), :class => 'member_link'
+        end
+    end
 
     form do |f|
         f.inputs do

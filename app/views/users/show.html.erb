@@ -112,6 +112,10 @@
   </tbody>
 </table>
 
+<% if current_organizer || current_user == @user %>
+    <%= link_to "Bill", bill_user_path(@user), :class => 'btn btn-success' %>
+<% end %>
+
 <% if current_organizer %>
     <h3>Charge</h3>
     <%= form_tag user_charge_path do %>
@@ -122,11 +126,10 @@
         <%= text_area_tag :description, nil, :placeholder => 'Description', :class => 'form-input' %>
 
         <%= submit_tag "Charge", :class => 'btn btn-large btn-success' %>
-        <%= submit_tag "Charge and Condense", :class => 'btn btn-large btn-info' %>
     <% end %>
 <% end %>
 
-<% if @user.registrants.count > 0 && (current_user == @user || current_organizer) %>
+<% if @user.registrants.count > 1 && (current_user == @user || current_organizer) %>
     <%= form_tag condense_user_path(@user), :style => 'display: inline' do %>
         Condense/balance charges onto: <%= select_tag :registrant_id, options_for_select(@user.registrants.map{|r| [r.name, r.id]}) %>
         <%= submit_tag "Condense", :class => 'btn btn-mini btn-warning' %>
