@@ -45,6 +45,10 @@ class UsersController < ApplicationController
         @user = User.new(user_params)
 
         if @user.save
+          if(@user.id == 1)
+            Organizer.create(:name => @user.name, :user_id => @user.id)
+            flash[:warning] = "Since you're the first user in the system, you get to be an organizer."
+          end
             r = @user.registrants.build
             r.name = @user.name
             r.save

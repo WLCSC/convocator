@@ -37,8 +37,18 @@ class ApplicationController < ActionController::Base
         opt.value
     end
 
+    def locked?
+      really_locked? && !(current_organizer || current_presenter)
+    end
+
+    def really_locked?
+      option('lock-registration') == 'lock'
+    end
+
     helper_method :current_user
     helper_method :current_organizer
     helper_method :current_presenter
     helper_method :option
+    helper_method :locked?
+    helper_method :really_locked?
 end

@@ -1,4 +1,5 @@
 class Registrant < ActiveRecord::Base
+  include Metahash
   has_many :registrations
   has_many :events, :through => :registrations
   belongs_to :user

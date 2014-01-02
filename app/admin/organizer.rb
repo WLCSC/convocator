@@ -14,7 +14,7 @@ ActiveAdmin.register Organizer do
         link_to 'User', admin_user_path(organizer.user)
     end
 
-    before_filter :only => [:show, :edit, :destroy] do
+    before_filter :only => [:show, :edit, :destroy, :update] do
         @organizer = Organizer.friendly.find(params[:id])
     end
 

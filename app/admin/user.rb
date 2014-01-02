@@ -1,5 +1,23 @@
 ActiveAdmin.register User do
 
+  index do
+    column :email do |u|
+      link_to u.email, admin_user_path(u)
+    end
+
+    column :organizer do |u|
+      u.organizer ? link_to(u.organizer.name, admin_organizer_path(u.organizer)) : "Nope"
+    end
+
+    column :presenter do |u|
+      u.presenter ? link_to(u.presenter.name, admin_presenter_path(u.presenter)) : "Nope"
+    end
+
+    column :balance do |u|
+      number_to_currency u.balance
+    end
+  end
+
     form do |f|
         f.inputs do
             f.input :email
@@ -31,11 +49,23 @@ ActiveAdmin.register User do
     end
 
     action_item :only => :show do
+      if user.organizer
         link_to('Organizer', "#{user.id}/create_organizer")
+      else
+        link_to('Promote to Organizer', "#{user.id}/create_organizer")
+      end
     end
   
     action_item :only => :show do
+      if user.presenter
         link_to('Presenter', "#{user.id}/create_presenter")
+      else
+        link_to('Promote to Presenter', "#{user.id}/create_presenter")
+      end
+    end
+
+    action_item :only => :show do
+      link_to('Billing', user_path(user))
     end
   
   # See permitted parameters documentation:

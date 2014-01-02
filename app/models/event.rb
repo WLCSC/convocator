@@ -19,107 +19,44 @@ class Event < ActiveRecord::Base
 
     def allows? registrant 
         go = true
+        puts "*"*40
+        puts "Checking #{registrant.name} for #{self.name}".center(40)
 
         registrant.events.each do |e|
             if e.end >= self.start && e.start <= self.end
                 go = false
+                puts "Blocked by Conflict"
             end
         end
 
         self.rules.where(:group_id => registrant.group_ids << nil).each do |rule|
-            rule.meta.each do |k, v|
-                case k
-                when 'block'
-                    go = false
-                end
-            end
+          allow = rule.allows? registrant
+          if allow == true
+            go &&= true
+            puts "Allowed by R#{rule.id}."
+          elsif allow == nil
+            puts "R#{rule.id} does not apply."
+          else
+            go = false
+            puts "Blocked by R#{rule.id}."
+          end
         end
+        puts go ? "OK" : "BLOCKED"
+        puts '*'*40
         go
     end
 
     def unregister_rules registrant 
-        go = true
-        continue_condition = true
-        self.rules.where(:group_id => registrant.group_ids << nil).each do |rule|
-            rule.meta.each do |k, v|
-                if continue_condition
-                    puts "Processing #{k} - #{v}"
-                    params = v.split '&'
-                    case k
-                    when 'and'
-                        group = Group.where(:slug => params[0])
-                        continue_condition = false unless  group.count > 0 && group.first.registrants.include?(registrant)
-                    when 'norefundafter'
-                        if DateTime.now < DateTime.parse(params[3])
-                        @charge = registrant.charges.build
-                        @charge.charger = rule
-                        @charge.amount = -BigDecimal.new(params[0])
-                        @charge.comment = "Canceled " + params[1] + " [#{name}]"
-                        @charge.description = ''
-                        @charge.icon = params[2] || 'usd'
-                        @charge.save
-                        end
-                    when 'charge'
-                        @charge = registrant.charges.build
-                        @charge.charger = rule
-                        @charge.amount = -BigDecimal.new(params[0])
-                        @charge.comment = "Canceled " + params[1] + " [#{name}]"
-                        @charge.description = ''
-                        @charge.icon = params[2] || 'usd'
-                        @charge.save
-                    when 'block'
-                        go = false
-                    end
-                end
-            end
-        end
-        go
+      self.rules.where(:group_id => registrant.group_ids << nil).each do |rule|
+        rule.apply registrant
+      end
     end
 
 
     def register_rules registrant 
-        go = true
-        continue_condition = true
-        self.rules.where(:group_id => registrant.group_ids << nil).each do |rule|
-            rule.meta.each do |k, v|
-                if continue_condition
-                    puts "Processing #{k} - #{v}"
-                    params = v.split '&'
-                    case k
-                    when 'and'
-                        group = Group.where(:slug => params[0])
-                        continue_condition = false unless  group.count > 0 && group.first.registrants.include?(registrant)
-                    when 'charge'
-                        @charge = registrant.charges.build
-                        @charge.charger = rule
-                        @charge.amount = BigDecimal.new(params[0])
-                        @charge.comment = params[1] + " [#{name}]"
-                        @charge.description = ''
-                        @charge.icon = params[2] || 'usd'
-                        @charge.save
-                    when 'norefundafter'
-                        @charge = registrant.charges.build
-                        @charge.charger = rule
-                        @charge.amount = BigDecimal.new(params[0])
-                        @charge.comment = params[1] + " [#{name}]"
-                        @charge.description = ''
-                        @charge.icon = params[2] || 'usd'
-                        @charge.save
-                    when 'norefund'
-                        @charge = registrant.charges.build
-                        @charge.charger = rule
-                        @charge.amount = BigDecimal.new(params[0])
-                        @charge.comment = params[1] + " [#{name}]"
-                        @charge.description = ''
-                        @charge.icon = params[2] || 'usd'
-                        @charge.save
-                    when 'block'
-                        go = false
-                    end
-                end
-            end
-        end
-        go
+      self.rules.where(:group_id => registrant.group_ids << nil).each do |rule|
+        rule.apply registrant
+      end
     end
 
     def allows registrant

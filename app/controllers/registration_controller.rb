@@ -77,6 +77,8 @@ class RegistrationController < ApplicationController
                     r.save
                 end
 
+                messages = @event.register_rules @registrant
+
                 if @event.cost != 0 && !r.waiting
                     @charge = @registrant.charges.build()
                     @charge.charger = @event
@@ -86,8 +88,6 @@ class RegistrationController < ApplicationController
                     @charge.icon = @event.icon || 'ticket'
                     @charge.save
                 end
-
-                @event.register_rules @registrant
 
                 if r.waiting
                     redirect_to events_path, :notice => "#{@registrant.name} is on the waitlist for #{@event.name}!"

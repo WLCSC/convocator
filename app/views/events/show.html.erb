@@ -1,3 +1,18 @@
+<% if locked? %>
+  <div class="panel panel-danger">
+    <div class="panel-heading">Registration is Closed!</div>
+    <div class="panel-body">Registration is currently closed.</div>
+  </div>
+<% end %>
+
+<% if really_locked? && !locked? %>
+  <div class="panel panel-info">
+    <div class="panel-heading">Registration is Closed!</div>
+    <div class="panel-body">Registration is currently closed for normal people.  Since you're a presenter or organizer, you can get in anyway.</div>
+  </div>
+<% end %>
+
+
 <div class="event">
   <% if @event.photo.present? %><%= image_tag @event.photo.url(:medium) %><% end %>
   <h2><% if @event.icon %><i class="fa fa-<%= @event.icon %>"></i> <% end %><%= @event.name %></h2>
@@ -13,7 +28,7 @@
         <h5>Presented by <%= presenters.map{|p| link_to(p.name, presenter_path(p), :class => (p.public ? '' : 'secret-presenter'))}.join(', ').html_safe %></h5>
     <% end %>
   <p>
-  <% if @event.limit %><i><%= @event.registrants.count %> registered - <%= @event.limit - @event.registrants.count %> seats left.</i><% end %>
+  <% if @event.limit %><i><% if !locked? %><%= @event.registrants.count %> registered - <% end %><%= @event.limit - @event.registrants.count %> seats left.</i><% end %>
     <% if current_user && (q = current_user.registrants.to_a.keep_if{|r| @event.registrants.include? r}).count > 0 %>
         - <%= q.map{|r| r.name}.join(', ') %> <%= q.count == 1 ? 'is' : 'are' %> registered.
     <% end %>
@@ -48,7 +63,7 @@
     </table>
 <% end %>
 
-<% if current_user %>
+<% if current_user && !locked? %>
     <h2>Register for <%= @event.name %></h2>
     <% if current_user.registrants.count > 0 %>
         <% registrants = current_user.registrants.to_a.delete_if{|r| !@event.allows? r}.delete_if{|r| @event.registrants.include? r} %>

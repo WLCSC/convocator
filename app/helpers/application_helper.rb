@@ -8,7 +8,7 @@ module ApplicationHelper
 
             type = :success if type == :notice
             type = :danger if type == :alert
-            next unless ALERT_TYPES.include?(type)
+            type = :info unless ALERT_TYPES.include?(type)
 
             Array(message).each do |msg|
                 text = content_tag(:li, content_tag(:div,
@@ -21,6 +21,7 @@ module ApplicationHelper
     end
 
     def markdown(text, source = nil)
+      text ||= ''
         if source
             text.gsub!(/!\(meta:([a-zA-Z-]+)\)/) do |match|
                 source.meta[$1] || "unknown"

@@ -9,6 +9,7 @@ module Metahash
 
     def fix_meta
         if meta_string
+          meta.clear
             meta_string.lines.each do |f|
                 if f.match(/:/)
                 l = f.split ':'
