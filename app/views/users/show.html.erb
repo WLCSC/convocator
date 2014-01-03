@@ -1,148 +1,160 @@
 <h1><%= @user.email %></h1>
 
 <div class="row">
-    <div class="col-md-6">
-        <% if @user.organizer %>
-            <div class="panel power-user">
-                <%= image_tag @user.organizer.photo.url(:thumb), :class => 'pull-left' %>
-                <h3><%= link_to @user.organizer.name, organizer_path(@user.organizer) %></h3>
-                <h4>Organizer</h4>
-            </div>
-        <% else %>
-            <div class="panel boring-user">
-                <h3>Not an Organizer</h3>
-                <p><%= current_user == @user ? "You are" : "This user is" %> not an organizer.</p>
-            </div>
-        <% end %>
-    </div>
-    <div class="col-md-6">
-        <% if @user.presenter %>
-            <div class="panel power-user">
-                <%= image_tag @user.presenter.photo.url(:thumb), :class => 'pull-left' %>
-                <h3><%= link_to @user.presenter.name, presenter_path(@user.presenter) %></h3>
-                <h4>Presenter</h4>
-            </div>
-        <% else %>
-            <div class="panel boring-user">
-                <h3>Not a Presenter</h3>
-                <p><%= current_user == @user ? "You are" : "This user is" %> not a presenter.</p>
-            </div>
-        <% end %>
-    </div>
+  <div class="col-md-6">
+    <% if @user.organizer %>
+      <div class="panel power-user">
+        <%= image_tag @user.organizer.photo.url(:thumb), :class => 'pull-left' %>
+        <h3><%= link_to @user.organizer.name, organizer_path(@user.organizer) %></h3>
+        <h4>Organizer</h4>
+      </div>
+    <% else %>
+      <div class="panel boring-user">
+        <h3>Not an Organizer</h3>
+        <p><%= current_user == @user ? "You are" : "This user is" %> not an organizer.</p>
+      </div>
+    <% end %>
+  </div>
+  <div class="col-md-6">
+    <% if @user.presenter %>
+      <div class="panel power-user">
+        <%= image_tag @user.presenter.photo.url(:thumb), :class => 'pull-left' %>
+        <h3><%= link_to @user.presenter.name, presenter_path(@user.presenter) %></h3>
+        <h4>Presenter</h4>
+      </div>
+    <% else %>
+      <div class="panel boring-user">
+        <h3>Not a Presenter</h3>
+        <p><%= current_user == @user ? "You are" : "This user is" %> not a presenter.</p>
+      </div>
+    <% end %>
+  </div>
 </div>
 
 <% if current_user == @user || current_organizer %>
-<div class="row">
-  <div class="col-md-6">
-<h2>Registrants</h2>
-<% if @user.registrants.count > 0 %>
-  <% @user.registrants.each do |r| %>
-  <div class="registrant">
-      <h3><%= r.name %></h3>
-      <% if current_organizer %>
-          <div>Member of <%= r.groups.map{|g| g.name}.join ', ' %></div>
-      <% end %>
-      <div><%= link_to 'Redo Survey', qualifiers_path(r) %></div>
-    <% if r.events.length > 0 || r.balance != 0 %>
-<table class="table">
-            <thead>
-                <tr>
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Registrants</h2>
+      <% if @user.registrants.count > 0 %>
+        <% @user.registrants.each do |r| %>
+          <div class="registrant">
+            <h3><%= r.name %></h3>
+            <% if current_organizer %>
+              <div>Member of <%= r.groups.map{|g| g.name}.join ', ' %></div>
+            <% end %>
+            <div><%= link_to 'Redo Survey', qualifiers_path(r) %></div>
+            <% if r.events.length > 0 || r.balance != 0 %>
+              <table class="table">
+                <thead>
+                  <tr>
                     <th><%= option('local-event') || 'Event' %></th>
                     <th>Cost</th>
                     <th>Cancel</th>
-                </tr>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% r.registrations.each do |reg| %>
+                    <tr>
+                      <td>
+                        <%= link_to reg.event.name, event_path(reg.event) %>
+                        <% if reg.waiting %><strong>(waitlist!)<% end %>
+                        </td>
+                        <td><%= number_to_currency reg.event.cost %></td>
+                        <td><%= link_to 'Cancel', unregister_path(reg.event, :registrant_id => r.id, :event_id => reg.event.id), :class => 'btn btn-mini btn-danger' %> 
+                        </tr>
+                      <% end %>
+                      <tr>
+                        <td><%= link_to registrant_charges_path(r) do %><b>Total</b> (details) <% end %></td>
+                        <td><%= number_to_currency r.balance %></td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                <% else %>
+                  <p>You aren't registered for any <%= option('local-events') || 'events' %>.  Maybe you should <%= link_to 'sign up for some', events_path %> or <%= link_to 'remove this registrant', destroy_registrant_path(r) %>.</p>  
+                <% end %>
+              </div>
+            <% end %>
+          <% else %>
+            <p>You currently don't have any registrants.</p>
+          <% end %>
+
+          <h3>New Registrant</h3>
+          <p>If you would like to register more people, you can add someone here:</p>
+          <%= form_tag create_registrant_path do %>
+            <%= text_field_tag :name, nil, :class => 'form-input', :placeholder => 'Name' %>
+            <%= submit_tag "Go", :class => 'btn btn-success' %>
+          <% end %>
+
+        </div>
+        <div class="col-md-6">
+          <h2>Charges</h2>
+          <% if @user.registrants.count > 0 %>
+          <table class="table">
+            <thead>
+              <tr>
+                <td><i class="fa fa-cash"></i></td>
+                <td colspan="2"><b>Total</b></td>
+                <td><%= number_to_currency @user.balance %></td>
+              </tr>
+
+              <tr>
+                <th><i class="fa fa-usd"></i></th>
+                <th>Registrant</th>
+                <th>Comment</th>
+                <th>Amount</th>
+              </tr>
             </thead>
+
             <tbody>
-        <% r.registrations.each do |reg| %>
-            <tr>
-                <td>
-                    <%= link_to reg.event.name, event_path(reg.event) %>
-                    <% if reg.waiting %><strong>(waitlist!)<% end %>
-                </td>
-                <td><%= number_to_currency reg.event.cost %></td>
-                <td><%= link_to 'Cancel', unregister_path(reg.event, :registrant_id => r.id, :event_id => reg.event.id), :class => 'btn btn-mini btn-danger' %> 
-            </tr>
+              <% @user.charges.first(10).each do |charge| %>
+                <tr>
+                  <td><i class="fa fa-<%= charge.icon || 'usd' %>"></i></td>
+                  <td><%=  charge.registrant.name  %></td>
+                  <td><%= charge.comment %></td>
+                  <td><%= number_to_currency charge.amount %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+
+          <% if current_organizer || current_user == @user %>
+            <p><%= link_to "View/Print Bill", bill_user_path(@user), :class => 'btn btn-success' %></p>
+          <% end %>
+
+          <% if current_organizer %>
+            <h3>Charge</h3>
+            <%= form_tag user_charge_path do %>
+              <%= select_tag :id, options_for_select(@user.registrants.map{|r| [r.name, r.id]}) %>
+              <%= text_field_tag :amount, nil, :placeholder => 'Amount', :class => 'form-input' %>
+              <%= text_field_tag :comment, nil, :placeholder => 'Comment', :class => 'form-input' %>
+              <%= text_field_tag :icon, nil, :placeholder => 'Icon', :class => 'form-input' %>
+              <%= text_area_tag :description, nil, :placeholder => 'Description', :class => 'form-input' %>
+
+              <%= submit_tag "Charge", :class => 'btn btn-large btn-success' %>
+            <% end %>
+          <% end %>
+
+          <% if @user.registrants.count > 1 && (current_user == @user || current_organizer) %>
+            <p>
+            <%= form_tag condense_user_path(@user), :style => 'display: inline' do %>
+              Condense/balance charges onto: <%= select_tag :registrant_id, options_for_select(@user.registrants.map{|r| [r.name, r.id]}) %>
+              <%= submit_tag "Condense", :class => 'btn btn-mini btn-warning' %>
+            <% end %>
+            </p>
+          <% end %>
+        <% else %>
+          <p>No registrants to charge!</p>
         <% end %>
-        <tr>
-            <td><%= link_to registrant_charges_path(r) do %><b>Total</b> (details) <% end %></td>
-            <td><%= number_to_currency r.balance %></td>
-            <td></td>
-        </tr>
-        </tbody>
-      </table>
-
-    <% else %>
-        <p>You aren't registered for any <%= option('local-events') || 'events' %>.  Maybe you should <%= link_to 'sign up for some', events_path %> or <%= link_to 'remove this registrant', destroy_registrant_path(r) %>.</p>  
+          <% if current_user == @user %>
+            <p><%= link_to 'Change Password', edit_me_path, :class => 'btn btn-primary' %></p>
+          <% elsif current_organizer %>
+            <p><%= link_to 'Edit', edit_user_path(@user), :class => 'btn btn-primary' %></p>
+          <% end %>
+        </div>
+      </div>
     <% end %>
-    </div>
-  <% end %>
-<% else %>
-  <p>You currently don't have any registrants.</p>
-<% end %>
-
-<h3>New Registrant</h3>
-<p>If you would like to register more people, you can add someone here:</p>
-<%= form_tag create_registrant_path do %>
-  <%= text_field_tag :name, nil, :class => 'form-input', :placeholder => 'Name' %>
-  <%= submit_tag "Go", :class => 'btn btn-success' %>
-<% end %>
-
-</div>
-<div class="col-md-6">
-  <h2>Charges</h2>
-  <table class="table">
-  <thead>
-    <tr>
-      <th><i class="fa fa-usd"></i></th>
-      <th>Registrant</th>
-      <th>Comment</th>
-      <th>Amount</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @user.charges.first(10).each do |charge| %>
-      <tr>
-          <td><i class="fa fa-<%= charge.icon || 'usd' %>"></i></td>
-        <td><%=  charge.registrant.name  %></td>
-        <td><%= charge.comment %></td>
-        <td><%= number_to_currency charge.amount %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<% if current_organizer || current_user == @user %>
-    <%= link_to "Bill", bill_user_path(@user), :class => 'btn btn-success' %>
-<% end %>
-
-<% if current_organizer %>
-    <h3>Charge</h3>
-    <%= form_tag user_charge_path do %>
-<%= select_tag :id, options_for_select(@user.registrants.map{|r| [r.name, r.id]}) %>
-        <%= text_field_tag :amount, nil, :placeholder => 'Amount', :class => 'form-input' %>
-        <%= text_field_tag :comment, nil, :placeholder => 'Comment', :class => 'form-input' %>
-        <%= text_field_tag :icon, nil, :placeholder => 'Icon', :class => 'form-input' %>
-        <%= text_area_tag :description, nil, :placeholder => 'Description', :class => 'form-input' %>
-
-        <%= submit_tag "Charge", :class => 'btn btn-large btn-success' %>
-    <% end %>
-<% end %>
-
-<% if @user.registrants.count > 1 && (current_user == @user || current_organizer) %>
-    <%= form_tag condense_user_path(@user), :style => 'display: inline' do %>
-        Condense/balance charges onto: <%= select_tag :registrant_id, options_for_select(@user.registrants.map{|r| [r.name, r.id]}) %>
-        <%= submit_tag "Condense", :class => 'btn btn-mini btn-warning' %>
-    <% end %>
-<% end %>
-<% if current_user == @user %>
-    <p><%= link_to 'Change Password', edit_me_path, :class => 'btn btn-primary' %></p>
-<% elsif current_organizer %>
-    <p><%= link_to 'Edit', edit_user_path(@user), :class => 'btn btn-primary' %></p>
-<% end %>
-</div>
-</div>
-<% end %>
 
 
 

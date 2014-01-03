@@ -10,7 +10,7 @@ ActiveAdmin.register Registrant do
             r.groups.map{|e| link_to e.name, admin_group_path(e) }.join(', ').html_safe
         end
         column :events do |r|
-            r.events.map{|e| link_to e.name, admin_event_path(e) }.join(', ').html_safe
+            r.events.map{|e| link_to (r.waiting_on?(e) ? e.name + " (waiting)" : e.name), admin_event_path(e) }.join(', ').html_safe
         end
         actions do |r|
             link_to "Billing", user_path(r.user), :class => 'member_link'

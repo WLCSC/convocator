@@ -1,6 +1,14 @@
 class EventsController < ApplicationController
+  before_filter :check_for_presenter, :only => [:update]
   def index
       @events = Event.order(:start)
+  end
+
+  def update
+    @event = Event.friendly.find(params[:id])
+    @event.description = params[:description]
+    @event.save
+    redirect_to @event, :notice => "Updated description."
   end
 
   def show

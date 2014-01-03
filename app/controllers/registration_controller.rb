@@ -16,7 +16,7 @@ class RegistrationController < ApplicationController
     end
 
     def destroy
-        @registrant = current_user.registrants.find(params[:id])
+        @registrant = (current_organizer ? Registrant : current_user.registrants).find(params[:id])
         user = @registrant.user
         if @registrant.balance == 0 && @registrant.events.count == 0
             @registrant.destroy
@@ -125,6 +125,7 @@ class RegistrationController < ApplicationController
 
             r.delete
 
+            if option('auto-waitlist-promote') == 'promote'
             if @event.registrations.where(:waiting => true).count > 0
                 promote = @event.registrations.where(:waiting => true).order('created_at ASC').first
                 promote.waiting = false
@@ -138,6 +139,7 @@ class RegistrationController < ApplicationController
                     @charge.icon = @event.icon || 'ticket'
                     @charge.save
                 end
+            end
             end
 
             redirect_to @registrant.user, :notice => "Unregistered #{@registrant.name} from #{@event.name}!"

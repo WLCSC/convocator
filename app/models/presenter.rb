@@ -1,7 +1,6 @@
 class Presenter < ActiveRecord::Base
     extend FriendlyId
     include Metahash
-    has_many :revisions
     has_many :assignments
     has_many :events, :through => :assignments
     belongs_to :user

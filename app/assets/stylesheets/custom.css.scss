@@ -35,8 +35,13 @@ p.question {
     font-weight: bold;
 }
 
+textarea {
+  font-family: monospace;
+}
+
 @media print {
     body{
         margin: 0px;
     }  
 }
+

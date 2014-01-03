@@ -48,14 +48,14 @@ class Event < ActiveRecord::Base
 
     def unregister_rules registrant 
       self.rules.where(:group_id => registrant.group_ids << nil).each do |rule|
-        rule.apply registrant
+        rule.apply registrant, self
       end
     end
 
 
     def register_rules registrant 
       self.rules.where(:group_id => registrant.group_ids << nil).each do |rule|
-        rule.apply registrant
+        rule.apply registrant, self
       end
     end
 

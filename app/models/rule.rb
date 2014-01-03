@@ -66,27 +66,27 @@ class Rule < ActiveRecord::Base
         end
       when 'not'
         group = Group.where(:slug => params[0])
-        go = group.count > 0 && group.first.registrants.include?(registrant)
+        go &&= group.count > 0 && group.first.registrants.include?(registrant)
       when 'block'
-        go = false
+        go &&= false
       when 'and'
         group = Group.where(:slug => params[0])
-        go = group.count > 0 && group.first.registrants.include?(registrant)
+        go &&= group.count > 0 && group.first.registrants.include?(registrant)
       when 'umeta'
         if params.count == 1
-          go = (registrant.meta.has_key?(params[0]))
+          go &&= (registrant.meta.has_key?(params[0]))
         else
-          go = (registrant.meta[params[0]] == params[1])
+          go &&= (registrant.meta[params[0]] == params[1])
         end
       end
     end
     if or_trip && !or_go
-      go = false
+      go &&= false
     end
     go
   end
 
-  def apply registrant
+  def apply registrant, event
     if allows? registrant
       meta.each do |k, v|
         puts "Processing #{k} - #{v}"
@@ -118,6 +118,16 @@ class Rule < ActiveRecord::Base
           @charge.description = ''
           @charge.icon = params[2] || 'usd'
           @charge.save
+          true
+        when 'waitlist'
+          reg = Registration.where(:event_id => event.id, :registrant_id => registrant.id).first
+          reg.waiting = true
+          reg.save
+          true
+        when 'skipwaitlist'
+          reg = Registration.where(:event_id => event.id, :registrant_id => registrant.id).first
+          reg.waiting = false
+          reg.save
           true
         end
       end

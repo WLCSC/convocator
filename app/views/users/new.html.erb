@@ -1,3 +1,7 @@
 <h1>Sign Up</h1>
 
+<% if (p = Page.where(:name => 'special#signup')).count > 0 %>
+  <%= markdown p.first.body %>
+<% end %>
+
 <%= render 'form' %>
