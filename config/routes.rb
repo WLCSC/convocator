@@ -1,4 +1,8 @@
 Convocator::Application.routes.draw do
+  post "memberships/create", :as => 'create_membership'
+  get "memberships/approve", :as => 'approve_membership'
+  get "memberships/destroy", :as => 'destroy_membership'
+
   get "registration" => 'registration#index', :as => 'registration' 
   get "registration/:id" => 'registration#show', :as => 'registrant'
   get "registration/:id/charges" => 'registration#charges', :as => 'registrant_charges'

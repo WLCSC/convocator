@@ -62,16 +62,16 @@ class Rule < ActiveRecord::Base
         or_trip = true
         if !or_go
           group = Group.where(:slug => params[0])
-          or_go = group.count > 0 && group.first.registrants.include?(registrant)
+          or_go = group.count > 0 && group.first.memberships.where(:approved => true, :registrant => registrant).count > 0
         end
       when 'not'
         group = Group.where(:slug => params[0])
-        go &&= group.count > 0 && group.first.registrants.include?(registrant)
+        go &&= group.count > 0 && group.first.memberships.where(:approved => true, :registrant => registrant).count > 0
       when 'block'
         go &&= false
       when 'and'
         group = Group.where(:slug => params[0])
-        go &&= group.count > 0 && group.first.registrants.include?(registrant)
+        go &&= group.count > 0 && group.first.memberships.where(:approved => true, :registrant => registrant).count > 0
       when 'umeta'
         if params.count == 1
           go &&= (registrant.meta.has_key?(params[0]))

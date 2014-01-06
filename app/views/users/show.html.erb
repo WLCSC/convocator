@@ -40,7 +40,7 @@
           <div class="registrant">
             <h3><%= r.name %></h3>
             <% if current_organizer %>
-              <div>Member of <%= r.groups.map{|g| g.name}.join ', ' %></div>
+              <div>Member of <%= r.memberships.map{|m| m.group.name + ( m.approved ? '' : link_to("!", approve_membership_path(:id => m), :class => 'btn btn-success btn-mini') + ' ') + link_to("X", destroy_membership_path(:id => m), :class => 'btn btn-danger btn-mini')}.join(', ').html_safe %></div>
             <% end %>
             <div><%= link_to 'Redo Survey', qualifiers_path(r) %></div>
             <% if r.events.length > 0 || r.balance != 0 %>

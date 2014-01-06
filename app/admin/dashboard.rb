@@ -15,7 +15,8 @@ ActiveAdmin.register_page "Dashboard" do
     columns do
     column do
       panel "Lock/Unlock Registration" do
-        if Option.where(:key => 'lock-registration').first.value == 'lock'
+        opt = Option.where(:key => 'lock-registration').first_or_create(:value => 'unlock')
+        if opt.value == 'lock'
           link_to "Unlock", admin_dashboard_unlock_path
         else
           link_to "Lock", admin_dashboard_lock_path

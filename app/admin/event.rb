@@ -7,6 +7,12 @@ ActiveAdmin.register Event do
         column :cost do |e|
             number_to_currency e.cost
         end
+        column :enrollment do |e|
+          e.registrations.where(:waiting => nil).count
+        end
+        column :waiting do |e|
+          e.waitable ? e.registrations.where(:waiting => true).count : '---'
+        end
         column :limit
         column :start
         column :end
