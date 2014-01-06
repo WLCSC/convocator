@@ -1,4 +1,5 @@
 class RegistrationController < ApplicationController
+  before_action :check_for_organizer, :only => ['unwait']
     def index
         redirect_to current_user
     end
@@ -147,6 +148,28 @@ class RegistrationController < ApplicationController
             redirect_to event_path(@event), :alert => "#{@registrant.name} is not registered for that event."
         end
 
+    end
+
+    def unwait
+      @registration = Registration.find(params[:id])
+      if @registration.event.registrations.where(:waiting => nil).count > @registration.event.limit
+        redirect_to @registration.event, :notice => 'There isn\'t room to do that.'
+      else
+        @registration.waiting = nil
+        @registration.save
+        redirect_to @registration.event, :notice => 'Moved user off of waitlist.'
+      end
+    end
+
+    def kick
+      @registration = Registration.find(params[:id])
+      if current_organizer || (current_presenter && @registration.event.presenters.include?(current_presenter))
+        @user = @registration.registrant.user
+        @registration.destroy
+        redirect_to @user, :notice => 'Kicked registrant out.'
+      else
+        redirect_to root_path, :alert => 'You can\'t do that.'
+      end
     end
 
 end

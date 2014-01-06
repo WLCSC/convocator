@@ -14,6 +14,7 @@ Convocator::Application.routes.draw do
   post "registration/:id/register" => 'registration#register', :as => 'register'
   get "registration/:id/unregister" => 'registration#unregister', :as => 'unregister'
   get "registration/:id/destroy" => 'registration#destroy', :as => 'destroy_registrant'
+  get "registration/:id/unwait" => 'registration#unwait', :as => 'unwait_registration'
 
   ActiveAdmin.routes(self)
   get "events" => 'events#index', :as => 'events'
