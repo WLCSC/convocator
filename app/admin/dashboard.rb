@@ -22,21 +22,31 @@ ActiveAdmin.register_page "Dashboard" do
           link_to "Lock", admin_dashboard_lock_path
         end
       end
-      panel "Recent Registrations" do
-        table_for Registration.order('created_at DESC').first(10) do
-          column 'Registrant' do  |r|
-            link_to r.registrant.name, admin_registrant_path(r.registrant)
+
+      panel "User Management" do
+          ul do
+              li link_to("Users", admin_users_path)
+              li link_to( "Groups", admin_groups_path)
+              li link_to("Organizers", admin_organizers_path)
+              li link_to("Presenters", admin_presenters_path)
           end
-          column 'User' do |r|
-            link_to r.registrant.user.email, admin_user_path(r.registrant.user)
+      end
+
+      panel "Registration Management" do
+          ul do
+              li link_to("Events", admin_events_path)
+              li link_to( "Registrants", admin_registrants_path)
+              li link_to( "Rules", admin_rules_path)
+              li link_to( "Qualifiers", admin_qualifiers_path)
           end
-          column 'Event' do |r|
-            link_to ("<i class=\"fa fa-#{r.event.icon}\"> " + r.event.name).html_safe, admin_event_path(r.event)
+      end
+
+      panel "Content Management" do
+          ul do
+              li link_to("Pages", admin_pages_path)
+              li link_to("Navigation", admin_navigators_path)
+              li link_to("Site Options", admin_options_path)
           end
-          column 'Registered At' do |r|
-            r.created_at.strftime("%Y-%m-%d %I:%M %P")
-          end
-        end
       end
     end
 
@@ -56,6 +66,24 @@ ActiveAdmin.register_page "Dashboard" do
           end
         end
       end
+      
+      panel "Recent Registrations" do
+        table_for Registration.order('created_at DESC').first(10) do
+          column 'Registrant' do  |r|
+            link_to r.registrant.name, admin_registrant_path(r.registrant)
+          end
+          column 'User' do |r|
+            link_to r.registrant.user.email, admin_user_path(r.registrant.user)
+          end
+          column 'Event' do |r|
+            link_to ("<i class=\"fa fa-#{r.event.icon}\"> " + r.event.name).html_safe, admin_event_path(r.event)
+          end
+          column 'Registered At' do |r|
+            r.created_at.strftime("%Y-%m-%d %I:%M %P")
+          end
+        end
+      end
+
     end
     end
   end

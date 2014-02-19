@@ -1,5 +1,18 @@
 ActiveAdmin.register Presenter do
 
+    index do
+        column :photo do |o|
+            image_tag o.photo.url(:thumb), :width => "80"
+        end
+        column :name do |o|
+            link_to(o.name, admin_presenter_path(o)) + (o.public ? '' : '<br/><i>(Hidden)</i>').html_safe
+        end
+        column :description do |o|
+            markdown o.description
+        end
+        actions
+    end
+
     form do |f|
         f.inputs do
             f.input :name

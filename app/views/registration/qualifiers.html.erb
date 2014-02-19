@@ -4,6 +4,8 @@
     <% @qualifiers.each do |q| %>
         <div class="form-group">
             <% case q.meta['type'] %>
+            <% when 'para', 'p' %>
+                <%= markdown q.meta[:content] %>
             <% when 'check_box', 'not_check_box', 'switch_box' %>
                 <%= label_tag "qu#{q.id}", q.name %> 
                 <%= check_box_tag "qu#{q.id}" %></p>

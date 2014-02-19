@@ -29,6 +29,15 @@ class Event < ActiveRecord::Base
             end
         end
 
+        if registrant.user.presenter && (registrant.user.presenter.name == registrant.name)
+            registrant.user.presenter.events.each do |e|
+                if e.end >= self.start && e.start <= self.end && e != self
+                    go = false
+                    puts "Blocked by presentation"
+                end
+            end
+        end
+
         self.rules.where(:group_id => registrant.group_ids << nil).each do |rule|
           allow = rule.allows? registrant
           if allow == true
