@@ -49,11 +49,7 @@ class UsersController < ApplicationController
             Organizer.create(:name => @user.name, :user_id => @user.id)
             flash[:warning] = "Since you're the first user in the system, you get to be an organizer."
           end
-            r = @user.registrants.build
-            r.name = @user.name
-            r.save
-            session[:user_id] = @user.id
-            redirect_to (Qualifier.count > 0 ? qualifiers_path(@user.registrants.first) : @user), :notice => 'Created user.'
+          redirect_to me_path, :notice => "Successfully created account." 
         else
             render action: 'new' 
         end

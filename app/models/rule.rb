@@ -72,6 +72,8 @@ class Rule < ActiveRecord::Base
       when 'and'
         group = Group.where(:slug => params[0])
         go &&= group.count > 0 && group.first.memberships.where(:approved => true, :registrant => registrant).count > 0
+      when 'maxcount'
+          go &&= registrant.events.count >= params[0].to_i
       when 'umeta'
         if params.count == 1
           go &&= (registrant.meta.has_key?(params[0]))

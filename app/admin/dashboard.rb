@@ -14,6 +14,9 @@ ActiveAdmin.register_page "Dashboard" do
   content do
     columns do
     column do
+        panel "Navbar Issues" do
+            p "The dark navbar at the top of the admin dashboard does not work properly.  Please use the links below & the breadcrumbs underneath the navbar to get around."
+        end
       panel "Lock/Unlock Registration" do
         opt = Option.where(:key => 'lock-registration').first_or_create(:value => 'unlock')
         if opt.value == 'lock'
@@ -51,22 +54,6 @@ ActiveAdmin.register_page "Dashboard" do
     end
 
     column do
-      panel "Outstanding Money" do
-        para number_to_currency(User.all.map{|u| u.balance}.inject(0, :+))
-
-        table_for User.all.delete_if{|u| u.balance == 0 } do
-          column 'Email' do |u|
-            link_to u.email, admin_user_path(u)
-          end
-          column 'Registrants' do |u|
-            u.registrants.map{|r| link_to r.name, admin_registrant_path(r)}.join(', ').html_safe
-          end
-          column 'Balance' do |u|
-            link_to number_to_currency(u.balance), bill_user_path(u)
-          end
-        end
-      end
-      
       panel "Recent Registrations" do
         table_for Registration.order('created_at DESC').first(10) do
           column 'Registrant' do  |r|
@@ -80,6 +67,22 @@ ActiveAdmin.register_page "Dashboard" do
           end
           column 'Registered At' do |r|
             r.created_at.strftime("%Y-%m-%d %I:%M %P")
+          end
+        end
+      end
+
+      panel "Outstanding Money" do
+        para number_to_currency(User.all.map{|u| u.balance}.inject(0, :+))
+
+        table_for User.all.delete_if{|u| u.balance == 0 } do
+          column 'Email' do |u|
+            link_to u.email, admin_user_path(u)
+          end
+          column 'Registrants' do |u|
+            u.registrants.map{|r| link_to r.name, admin_registrant_path(r)}.join(', ').html_safe
+          end
+          column 'Balance' do |u|
+            link_to number_to_currency(u.balance), bill_user_path(u)
           end
         end
       end

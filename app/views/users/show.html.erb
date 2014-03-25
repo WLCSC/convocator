@@ -1,5 +1,6 @@
 <h1><%= @user.email %></h1>
 
+<% if current_user.organizer || current_user.presenter || @user.organizer || @user.presenter %>
 <div class="row">
   <div class="col-md-6">
     <% if @user.organizer %>
@@ -30,6 +31,7 @@
     <% end %>
   </div>
 </div>
+<% end %>
 
 <% if current_user == @user || current_organizer %>
   <div class="row">
@@ -72,12 +74,12 @@
                   </table>
 
                 <% else %>
-                  <p>You aren't registered for any <%= option('local-events') || 'events' %>.  Maybe you should <%= link_to 'sign up for some', events_path %> or <%= link_to 'remove this registrant', destroy_registrant_path(r) %>.</p>  
+                    <p><%= r.name %> isn't registered for any <%= option('local-events') || 'events' %>.  Maybe you should <%= link_to 'sign up for some', events_path %> or <%= link_to 'remove this registrant', destroy_registrant_path(r) %>.</p>  
                 <% end %>
               </div>
             <% end %>
           <% else %>
-            <p>You currently don't have any registrants.</p>
+            <p>You currently don't have any registrants.  You should probably use the form below to add someone.</p>
           <% end %>
 
           <h3>New Registrant</h3>
@@ -145,7 +147,7 @@
             </p>
           <% end %>
         <% else %>
-          <p>No registrants to charge!</p>
+          <p>There aren't any registrants to charge!</p>
         <% end %>
           <% if current_user == @user %>
             <p><%= link_to 'Change Password', edit_me_path, :class => 'btn btn-primary' %></p>

@@ -27,7 +27,7 @@
                 <%= e.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= e.end.strftime '%I:%M %P' %>
               <% else %>
                 <%= e.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= e.end.strftime '%Y-%m-%d %I:%M %P' %>
-              <% end %> (<%= distance_of_time_in_words e.start, e.end %>)
+              <% end %>
             </h4>
             <% presenters = current_organizer ? e.presenters : e.presenters.where(:public => true) %>
             <% if presenters.count > 0 %>
