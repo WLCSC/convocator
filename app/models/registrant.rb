@@ -14,4 +14,12 @@ class Registrant < ActiveRecord::Base
   def waiting_on? event
       registrations.where(:event_id => event.id).first.waiting
   end
+
+  def name_with_groups
+      if groups.count > 0
+          self.name + " (" + groups.map{|g| g.name}.join(', ') + ")"
+      else
+          self.name
+      end
+  end
 end

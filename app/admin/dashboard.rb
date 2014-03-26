@@ -29,7 +29,6 @@ ActiveAdmin.register_page "Dashboard" do
       panel "User Management" do
           ul do
               li link_to("Users", admin_users_path)
-              li link_to( "Groups", admin_groups_path)
               li link_to("Organizers", admin_organizers_path)
               li link_to("Presenters", admin_presenters_path)
           end
@@ -39,6 +38,7 @@ ActiveAdmin.register_page "Dashboard" do
           ul do
               li link_to("Events", admin_events_path)
               li link_to( "Registrants", admin_registrants_path)
+              li link_to("Groups", admin_groups_path)
               li link_to( "Rules", admin_rules_path)
               li link_to( "Qualifiers", admin_qualifiers_path)
           end

@@ -62,7 +62,13 @@
                         <% if reg.waiting %><strong>(waitlist!)<% end %>
                         </td>
                         <td><%= number_to_currency reg.event.cost %></td>
-                        <td><%= link_to 'Cancel', unregister_path(reg.event, :registrant_id => r.id, :event_id => reg.event.id), :class => 'btn btn-mini btn-danger' %> 
+                        <td>
+                            <% if locked? %>
+                                <i class="fa fa-lock"></i>
+                            <% else %>
+                                <%= link_to 'Cancel', unregister_path(reg.event, :registrant_id => r.id, :event_id => reg.event.id), :class => 'btn btn-mini btn-danger' %> 
+                            <% end %>
+                        </td>
                         </tr>
                       <% end %>
                       <tr>

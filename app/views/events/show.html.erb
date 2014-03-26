@@ -59,7 +59,7 @@
           <td><%= link_to user.email, "mailto:#{user.email}" %></td>
           <td>
             <%= @event.registrants_for(user).map do |r|
-              r.waiting_on?(@event) ? link_to(r.name, r.user, :class => 'waitlisted') + " " + link_to('Promote', unwait_registration_path(r.registrations.where(:event => @event).first), :class => 'btn btn-mini btn-success') : link_to(r.name, r.user)
+              r.waiting_on?(@event) ? link_to(r.name_with_groups, r.user, :class => 'waitlisted') + " " + link_to('Promote', unwait_registration_path(r.registrations.where(:event => @event).first), :class => 'btn btn-mini btn-success') : link_to(r.name_with_groups, r.user)
             end.join(', ').html_safe %>
           </td>
         </tr>
