@@ -17,6 +17,21 @@ ActiveAdmin.register Registrant do
         end
     end
 
+    show do
+        attributes_table do
+            row :name
+            row :user do
+                link_to registrant.user.email, admin_user_path(registrant.user)
+            end
+            row :groups do
+                registrant.groups.map{|g| link_to(g.name, admin_group_path(g))}.join(', ').html_safe
+            end
+            row :events do
+                registrant.events.map{|e| link_to(g.name, admin_event_path(e))}.join(', ').html_safe
+            end
+        end
+    end
+
     form do |f|
         f.inputs do
             f.input :user_id, :as => :select, :collection => User.all

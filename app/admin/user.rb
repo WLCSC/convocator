@@ -5,6 +5,14 @@ ActiveAdmin.register User do
       link_to u.email, admin_user_path(u)
     end
 
+    column :balance do |u|
+      number_to_currency u.balance
+    end
+
+    column :registrants do |u|
+        u.registrants.count > 0 ? (u.registrants.map{|r| link_to(r.name, admin_registrant_path(r))}.join(', ')).html_safe : "None"
+    end
+
     column :organizer do |u|
       u.organizer ? link_to(u.organizer.name, admin_organizer_path(u.organizer)) : "Nope"
     end
@@ -12,10 +20,18 @@ ActiveAdmin.register User do
     column :presenter do |u|
       u.presenter ? link_to(u.presenter.name, admin_presenter_path(u.presenter)) : "Nope"
     end
+  end
 
-    column :balance do |u|
-      number_to_currency u.balance
-    end
+  show do
+      h2 user.email
+        div do
+            h4 'Registrants'
+            ul do
+                user.registrants.each do |r|
+                    li link_to(r.name_with_groups, admin_registrant_path(r))
+                end
+            end
+        end
   end
 
     form do |f|

@@ -51,4 +51,4 @@ gem 'friendly_id', '~> 5.0.0'
 gem 'activeadmin', github: 'gregbell/active_admin'
 gem 'redcarpet'
 gem 'mysql2'
-gem 'exception_notification'
+gem "exception_notification", github: "smartinez87/exception_notification", branch: "master"

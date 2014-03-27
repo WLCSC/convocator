@@ -1,0 +1,6 @@
+Whatever::Application.config.middleware.use ExceptionNotification::Rack,
+    :email => {
+    :email_prefix => "[ROBOTICS SIGNUP ERROR] ",
+    :sender_address => %{"noreply" <noreply@wl.k12.in.us>},
+    :exception_recipients => %w{thompsonb@wl.k12.in.us}
+}
