@@ -1,5 +1,5 @@
 class RegistrationController < ApplicationController
-  before_action :check_for_organizer, :only => ['unwait']
+    before_action :check_for_organizer, :only => ['unwait']
     def index
         redirect_to current_user
     end
@@ -127,20 +127,20 @@ class RegistrationController < ApplicationController
             r.delete
 
             if option('auto-waitlist-promote') == 'promote'
-            if @event.registrations.where(:waiting => true).count > 0
-                promote = @event.registrations.where(:waiting => true).order('created_at ASC').first
-                promote.waiting = false
-                promote.save
-                if @event.cost != 0 && !r.waiting
-                    @charge = promote.registrant.charges.build()
-                    @charge.charger = @event
-                    @charge.amount = @event.cost
-                    @charge.comment = "Registered for #{@event.name}"
-                    @charge.description = 'Promoted off waitlist.'
-                    @charge.icon = @event.icon || 'ticket'
-                    @charge.save
+                if @event.registrations.where(:waiting => true).count > 0 && @event.registrations.count < @event.limit
+                    promote = @event.registrations.where(:waiting => true).order('created_at ASC').first
+                    promote.waiting = false
+                    promote.save
+                    if @event.cost != 0 && !r.waiting
+                        @charge = promote.registrant.charges.build()
+                        @charge.charger = @event
+                        @charge.amount = @event.cost
+                        @charge.comment = "Registered for #{@event.name}"
+                        @charge.description = 'Promoted off waitlist.'
+                        @charge.icon = @event.icon || 'ticket'
+                        @charge.save
+                    end
                 end
-            end
             end
 
             redirect_to @registrant.user, :notice => "Unregistered #{@registrant.name} from #{@event.name}!"
@@ -151,25 +151,24 @@ class RegistrationController < ApplicationController
     end
 
     def unwait
-      @registration = Registration.find(params[:id])
-      if @registration.event.registrations.where(:waiting => nil).count > @registration.event.limit
-        redirect_to @registration.event, :notice => 'There isn\'t room to do that.'
-      else
-        @registration.waiting = nil
-        @registration.save
-        redirect_to @registration.event, :notice => 'Moved user off of waitlist.'
-      end
+        @registration = Registration.find(params[:id])
+        if @registration.event.registrations.where(:waiting => nil).count > @registration.event.limit
+            redirect_to @registration.event, :notice => 'There isn\'t room to do that.'
+        else
+            @registration.waiting = nil
+            @registration.save
+            redirect_to @registration.event, :notice => 'Moved user off of waitlist.'
+        end
     end
 
     def kick
-      @registration = Registration.find(params[:id])
-      if current_organizer || (current_presenter && @registration.event.presenters.include?(current_presenter))
-        @user = @registration.registrant.user
-        @registration.destroy
-        redirect_to @user, :notice => 'Kicked registrant out.'
-      else
-        redirect_to root_path, :alert => 'You can\'t do that.'
-      end
+        @registration = Registration.find(params[:id])
+        if current_organizer || (current_presenter && @registration.event.presenters.include?(current_presenter))
+            @user = @registration.registrant.user
+            @registration.destroy
+            redirect_to @user, :notice => 'Kicked registrant out.'
+        else
+            redirect_to root_path, :alert => 'You can\'t do that.'
+        end
     end
-
 end

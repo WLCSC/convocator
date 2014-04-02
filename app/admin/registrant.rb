@@ -27,7 +27,7 @@ ActiveAdmin.register Registrant do
                 registrant.groups.map{|g| link_to(g.name, admin_group_path(g))}.join(', ').html_safe
             end
             row :events do
-                registrant.events.map{|e| link_to(g.name, admin_event_path(e))}.join(', ').html_safe
+                registrant.events.map{|e| link_to(e.name, admin_event_path(e))}.join(', ').html_safe
             end
         end
     end
