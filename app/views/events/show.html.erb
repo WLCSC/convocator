@@ -1,21 +1,10 @@
-<% if locked? %>
-  <div class="panel panel-danger">
-    <div class="panel-heading">Registration is Closed!</div>
-    <div class="panel-body">Registration is currently closed.</div>
-  </div>
-<% end %>
-
-<% if really_locked? && !locked? %>
-  <div class="panel panel-info">
-    <div class="panel-heading">Registration is Closed!</div>
-    <div class="panel-body">Registration is currently closed for normal people.  Since you're a presenter or organizer, you can get in anyway.</div>
-  </div>
-<% end %>
-
-
 <div class="event">
   <% if @event.photo.present? %><%= image_tag @event.photo.url(:medium) %><% end %>
-  <h2><% if @event.icon %><i class="fa fa-<%= @event.icon %>"></i> <% end %><%= @event.name %></h2>
+              <% if @event.locked? %>
+                  <h2 class="locked-event"><%= fa_icon "lock" %> <% if @event.icon %><i class="fa fa-<%= @event.icon %>"></i> <% end %><%= @event.name %> <%= fa_icon "lock" %></h2>
+              <% else %>
+                  <h2><% if @event.icon %><i class="fa fa-<%= @event.icon %>"></i> <% end %><%= @event.name %></h2>
+              <% end %>
   <h4>
     <% if @event.end - @event.start < 60*60*24 %>
       <%= @event.start.strftime '%Y-%m-%d %I:%M %P' %> - <%= @event.end.strftime '%I:%M %P' %>
@@ -28,7 +17,7 @@
     <h5>Presented by <%= presenters.map{|p| link_to(p.name, presenter_path(p), :class => (p.public ? '' : 'secret-presenter'))}.join(', ').html_safe %></h5>
   <% end %>
   <p>
-  <% if @event.limit %><i><% if !locked? %><%= @event.registrations.where(:waiting => nil).count %> registered - <% end %><%= el = @event.limit - @event.registrations.where(:waiting => nil).count; ((current_presenter || current_organizer) && el < 0) ? el : '0'  %> seats left.</i><% end %>
+  <% if @event.limit %><i><% if !@event.locked? %><%= @event.registrations.where(:waiting => nil).count %> registered - <% end %><%= el = @event.limit - @event.registrations.where(:waiting => nil).count; ((current_presenter || current_organizer) && el < 0) ? el : '0'  %> seats left.</i><% end %>
   <% if current_user && (q = current_user.registrants.to_a.keep_if{|r| @event.registrants.include? r}).count > 0 %>
     - <%= q.map{|r| r.waiting_on?(@event) ? r.name + " (waitlist)" : r.name}.join(', ') %> <%= q.count == 1 ? 'is' : 'are' %> registered.
   <% end %>
@@ -68,7 +57,7 @@
   </table>
 <% end %>
 
-<% if current_user && !locked? %>
+<% if current_user && !@event.locked? %>
   <h2>Register for <%= @event.name %></h2>
   <% if current_user.registrants.count > 0 %>
     <% registrants = current_user.registrants.to_a.delete_if{|r| !@event.allows? r}.delete_if{|r| @event.registrants.include? r} %>

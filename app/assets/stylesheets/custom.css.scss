@@ -39,6 +39,19 @@ textarea {
   font-family: monospace;
 }
 
+.locked-event {
+    color: #a22;
+
+    a {
+        color: #a22;
+    }
+
+    .fa {
+        color: #c00;
+        text-shadow: 1px 1px 6px rgba(128, 96, 96, 0.6);
+    }
+}
+
 @media print {
     body{
         margin: 0px;
