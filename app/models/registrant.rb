@@ -6,7 +6,7 @@ class Registrant < ActiveRecord::Base
   has_many :charges
   has_many :memberships
   has_many :groups, :through => :memberships
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: {scope: :user_id}
 
   def balance
     self.charges.count > 0 ? self.charges.map{|c| c.amount || 0}.inject(0, :+) : 0

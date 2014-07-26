@@ -24,7 +24,7 @@
               <h5>Presented by <%= presenters.map{|p| link_to(p.name, presenter_path(p), :class => (p.public ? '' : 'secret-presenter'))}.join(', ').html_safe %></h5>
             <% end %>
             <% if e.limit %>
-              <p><i><% if !e.locked? %> <%= e.registrations.where(:waiting => nil).count %> registered -<% end %> <%= el = e.limit - e.registrations.where(:waiting => nil).count; ((current_presenter || current_organizer) && el < 0) ? el : '0'  %> seats left.</i><% if (current_presenter || current_organizer) && e.registrations.where(:waiting => true).count > 0 %> <%= e.registrations.where(:waiting => true).count %> on waitlist.<% end %></p>
+              <p><i><% if !e.locked? %> <%= e.registrations.where(:waiting => nil).count %> registered -<% end %> <%= el = e.limit - e.registrations.where(:waiting => nil).count; el > 0 ? el : '0'  %> seats left.</i><% if (current_presenter || current_organizer) && e.registrations.where(:waiting => true).count > 0 %> <%= e.registrations.where(:waiting => true).count %> on waitlist.<% end %></p>
             <% end %>
           </div>
         <% end %>
