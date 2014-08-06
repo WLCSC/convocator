@@ -8,12 +8,14 @@
                 <%= markdown q.meta[:content] %>
             <% when 'check_box', 'not_check_box', 'switch_box' %>
                 <%= label_tag "qu#{q.id}", q.name %> 
+                <%= markdown q.description %>
                 <%= check_box_tag "qu#{q.id}" %></p>
             <% when 'radio_group' %>
                 <%
                     labels = q.meta['labels'].split '&'
                 %>
                 <p class="question"><%= q.name %></p>
+                <%= markdown q.description %>
                 <% 1.upto(labels.length) do |i| %>
                     <div class="radio">
                         <label>

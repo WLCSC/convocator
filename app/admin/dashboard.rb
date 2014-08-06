@@ -2,15 +2,6 @@ ActiveAdmin.register_page "Dashboard" do
 
   menu :priority => 1, :label => 'Dashboard' 
 
-  page_action :unlock, :method => :get do
-    Option.where(:key => 'lock-registration').first.update_attributes(:value => 'unlock')
-    redirect_to admin_dashboard_path
-  end
-  page_action :lock, :method => :get do
-    Option.where(:key => 'lock-registration').first.update_attributes(:value => 'lock')
-    redirect_to admin_dashboard_path
-  end
-
   content do
     columns do
     column do
@@ -18,12 +9,15 @@ ActiveAdmin.register_page "Dashboard" do
             p "The dark navbar at the top of the admin dashboard does not work properly.  Please use the links below & the breadcrumbs underneath the navbar to get around."
         end
       panel "Lock/Unlock Registration" do
-        opt = Option.where(:key => 'lock-registration').first_or_create(:value => 'unlock')
-        if opt.value == 'lock'
-          link_to "Unlock", admin_dashboard_unlock_path
-        else
-          link_to "Lock", admin_dashboard_lock_path
-        end
+          ul do
+              Lock.all.each do |l|
+                  if l.locked
+                    ul(link_to(('<i class="fa fa-lock"></i> ' + l.name).html_safe, admin_lock_path(l)))
+                  else
+                    ul(link_to(('<i class="fa fa-unlock"></i> ' + l.name).html_safe, admin_lock_path(l)))
+                  end
+              end
+          end
       end
 
       panel "User Management" do

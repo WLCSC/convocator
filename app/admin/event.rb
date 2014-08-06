@@ -4,6 +4,9 @@ ActiveAdmin.register Event do
         column :name do |e|
             ("<i class=\"fa fa-#{e.icon}\"></i> " +  link_to(e.name, admin_event_path(e))).html_safe
         end
+        column :locked do |e|
+            e.lock ? e.lock.locked : false
+        end
         column :cost do |e|
             number_to_currency e.cost
         end
@@ -29,6 +32,7 @@ ActiveAdmin.register Event do
         f.input :icon
         f.input :photo
         f.input :waitable
+        f.input :lock
         f.input :meta_string, :as => :text, :input_html => {:value => event.get_meta_string}
         end
 
@@ -46,7 +50,7 @@ ActiveAdmin.register Event do
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
-    permit_params :name, :description, :start, :end, :limit, :cost, :waitable, :icon, :photo, :meta_string, :presenter_ids => []
+    permit_params :name, :description, :start, :end, :limit, :cost, :waitable, :icon, :photo, :meta_string, :lock_id, :presenter_ids => []
   #
   # or
   #

@@ -12,6 +12,7 @@ class Event < ActiveRecord::Base
     has_many :charges, :as => :charger
     has_many :rulers
     has_many :rules, :through => :rulers
+    belongs_to :lock
 
     friendly_id :name, use: :slugged
     has_attached_file :photo, :styles => {:medium => "300x300>", :thumb => '100x100>'}
@@ -74,5 +75,9 @@ class Event < ActiveRecord::Base
 
     def registrants_for user
         registrants.where(:user_id => user.id)
+    end
+
+    def locked?
+        lock ? lock.locked : false
     end
 end

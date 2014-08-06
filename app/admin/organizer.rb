@@ -13,11 +13,24 @@ ActiveAdmin.register Organizer do
         actions
     end
 
+    show do
+        h2 organizer.name
+        div do
+            link_to organizer.user.email, organizer.user
+        end
+
+        div do
+            image_tag organizer.photo.url(:medium)
+            p organizer.description
+        end
+    end
+
     form do |f|
         f.inputs do
             f.input :name
             f.input :public
             f.input :description
+            f.input :meta_string, :as => :text, :input_html => {:value => organizer.get_meta_string}
             f.input :photo, :as => :file
         end
         f.actions
