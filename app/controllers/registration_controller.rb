@@ -7,9 +7,11 @@ class RegistrationController < ApplicationController
     def create
         @registrant = current_user.registrants.build
         @registrant.name = params[:name]
-        @registrant.save
-
-        redirect_to (Qualifier.count > 0 ? qualifiers_path(@registrant) : @registrant.user), :notice => 'Created registrant.'
+        if @registrant.save
+            redirect_to (Qualifier.count > 0 ? qualifiers_path(@registrant) : @registrant.user), :notice => 'Created registrant.'
+        else
+            redirect_to @registrant.user, :alert => 'Could not add registrant.  Are you sure you typed a name?'
+        end
     end
 
     def show
