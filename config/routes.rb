@@ -20,6 +20,7 @@ Convocator::Application.routes.draw do
   get "events" => 'events#index', :as => 'events'
   get "events/:id" => 'events#show', :as => 'event'
   post "events/:id" => 'events#update', :as => 'update_event'
+  post "events/:id/charge" => 'events#charge', :as => 'charge_event'
   get "events/tagged/:id" => 'events#tagged', :as => 'tag'
 
   get "about" => 'about#index', :as => 'about'

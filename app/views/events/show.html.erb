@@ -31,11 +31,27 @@
 
 
 <% if (current_presenter && @event.presenters.include?(current_presenter)) || current_organizer %>
+    <div class="row">
+        <div class="col-md-6">
   <h2>Update Description</h2>
   <%= form_tag update_event_path(@event) do %>
     <%= text_area_tag :description, @event.description %>
     <%= submit_tag "Update", :class => 'btn btn-warning btn-large' %>
-  <% end %> 
+<% end %>
+</div>
+<div class="col-md-6">
+<h2>Charge Active Registrants</h2>
+            <%= form_tag charge_event_path do %>
+              <%= text_field_tag :amount, nil, :placeholder => 'Amount', :class => 'form-input' %>
+              <%= text_field_tag :comment, nil, :placeholder => 'Comment', :class => 'form-input' %>
+              <%= text_field_tag :icon, nil, :placeholder => 'Icon', :class => 'form-input' %>
+              <%= text_area_tag :description, nil, :placeholder => 'Description', :class => 'form-input' %>
+
+              <%= submit_tag "Charge", :class => 'btn btn-large btn-success' %>
+          <% end %>
+      </div>
+  </div>
+
   <h2>Registrations</h2>
   <table class="table table-striped">
     <thead>

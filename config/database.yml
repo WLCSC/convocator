@@ -1,5 +1,8 @@
 defaults: &defaults
-  adapter: sqlite3
+  adapter: mysql2
+  username: convocator-robot
+  password: hccnnrMPnBd8568H
+  host: 10.10.1.81
 
 development:
   <<: *defaults

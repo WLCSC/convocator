@@ -16,5 +16,6 @@
 /tmp
 
 /public/system
+/config/database.yml
 /config/initializers/setup_mail.rb
 /config/initializers/exception_notifier.rb

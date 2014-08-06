@@ -53,17 +53,21 @@ class RegistrationController < ApplicationController
 
     def charge
         @registrant = Registrant.find(params[:id])
-        @charge = @registrant.charges.build
-        @charge.charger_type = 'Organizer'
-        @charge.charger_id = current_organizer.id
-        @charge.amount = params[:amount]
-        @charge.comment = params[:comment]
-        @charge.description = params[:description]
-        @charge.icon = params[:icon]
-        if @charge.save
-            redirect_to registrant_charges_path(@registrant), :notice => 'Charge posted.'
+        if params[:amount].empty? || params[:comment].empty? || params[:description] || params[:icon]
+            redirect_to @registrant, alert: "Fill out all the fields before charging."
         else
-            redirect_to registrant_charges_path(@registrant), :alert => 'Charge unsucessful.'
+            @charge = @registrant.charges.build
+            @charge.charger_type = 'Organizer'
+            @charge.charger_id = current_organizer.id
+            @charge.amount = params[:amount]
+            @charge.comment = params[:comment]
+            @charge.description = params[:description]
+            @charge.icon = params[:icon]
+            if @charge.save
+                redirect_to registrant_charges_path(@registrant), :notice => 'Charge posted.'
+            else
+                redirect_to registrant_charges_path(@registrant), :alert => 'Charge unsucessful.'
+            end
         end
     end
 

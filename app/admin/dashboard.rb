@@ -18,6 +18,8 @@ ActiveAdmin.register_page "Dashboard" do
                   end
               end
           end
+
+          link_to "Manage Locks", admin_locks_path
       end
 
       panel "User Management" do
@@ -35,6 +37,7 @@ ActiveAdmin.register_page "Dashboard" do
               li link_to("Groups", admin_groups_path)
               li link_to( "Rules", admin_rules_path)
               li link_to( "Qualifiers", admin_qualifiers_path)
+              li link_to( "Locks", admin_locks_path)
           end
       end
 
